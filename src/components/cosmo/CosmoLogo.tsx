@@ -136,24 +136,24 @@ export function CosmoLogo({
       <div className="flex flex-col text-left">
         <div className="flex items-baseline gap-2">
           <span 
-            className={`font-serif-editorial tracking-[0.22em] font-medium uppercase transition-colors duration-300 ${
-              isSm ? 'text-lg' : isLg ? 'text-3xl' : 'text-2xl'
+            className={`font-serif-editorial tracking-[0.16em] sm:tracking-[0.22em] font-medium uppercase transition-colors duration-300 ${
+              isSm ? 'text-base sm:text-lg' : isLg ? 'text-2xl sm:text-3xl' : 'text-lg sm:text-2xl'
             } ${inverted ? 'text-white' : 'text-[#161514] group-hover:text-black'}`}
           >
             C O S M O
           </span>
         </div>
         {showSubtitle && (
-          <div className="flex items-center gap-1.5 -mt-0.5">
+          <div className="hidden sm:flex items-center gap-1.5 -mt-0.5">
             <span 
-              className={`text-[9px] font-mono-data tracking-[0.24em] uppercase font-semibold ${
+              className={`text-[8px] sm:text-[9px] font-mono-data tracking-[0.18em] sm:tracking-[0.24em] uppercase font-semibold ${
                 inverted ? 'text-neutral-400' : 'text-neutral-500'
               }`}
             >
               ATELIER
             </span>
             <span className="text-neutral-300 text-[8px]">•</span>
-            <span className="text-[9px] font-mono-data tracking-[0.2em] uppercase font-semibold text-[#059669]">
+            <span className="text-[8px] sm:text-[9px] font-mono-data tracking-[0.16em] sm:tracking-[0.2em] uppercase font-semibold text-[#059669]">
               APPLE BOUTIQUE
             </span>
           </div>

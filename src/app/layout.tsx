@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,15 @@ const newsreader = Newsreader({
   weight: ["400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  themeColor: "#FAF8F5",
+};
+
 export const metadata: Metadata = {
   title: "COSMO — Contemporary Apparatus & Archival Curation",
   description: "Curated Apple hardware presented as architectural sculpture. Contemporary flagships and iconic archival relics.",
@@ -23,6 +32,7 @@ export const metadata: Metadata = {
     apple: "/brand/cosmo-logo.svg",
   },
 };
+
 
 import { CartProvider } from "../context/CartContext";
 import { AuthProvider } from "../context/AuthContext";

@@ -50,9 +50,9 @@ export function Header({
   return (
     <header className="sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-xl border-b border-neutral-200/60 transition-all">
       {/* Editorial Announcement Bar */}
-      <div className="bg-[#161514] text-[#FAF8F5] py-2 px-6 text-center text-[10px] tracking-[0.24em] uppercase font-mono-data border-b border-[#272522] flex items-center justify-between">
+      <div className="bg-[#161514] text-[#FAF8F5] py-2 px-3 sm:px-6 text-center text-[9px] sm:text-[10px] tracking-[0.16em] sm:tracking-[0.24em] uppercase font-mono-data border-b border-[#272522] flex items-center justify-between">
         <span className="hidden md:inline text-neutral-400">COSMO STORE // 2026 EDITION</span>
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-1.5 sm:gap-2 mx-auto md:mx-0">
           <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
           <span>FREE INSURED COURIER DELIVERY ON ALL ORDERS</span>
         </span>
@@ -60,10 +60,10 @@ export function Header({
       </div>
 
       {/* Main Navigation */}
-      <div className="max-w-[1520px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
+      <div className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 py-3 sm:py-3.5 flex items-center justify-between gap-2">
         {/* Left: Brand Monogram / Wordmark */}
-        <Link href="/" className="group cursor-pointer" onClick={() => onSelectCategory('all')}>
-          <CosmoLogo size="md" showSubtitle={true} />
+        <Link href="/" className="group cursor-pointer shrink-0" onClick={() => onSelectCategory('all')}>
+          <CosmoLogo size="sm" showSubtitle={true} />
         </Link>
 
         {/* Center: Curatorial Category Links */}

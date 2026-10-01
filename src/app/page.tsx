@@ -58,24 +58,24 @@ function HomeContent() {
       <main className="flex-1">
         
         {/* Curatorial Masthead & Catalog Index Header */}
-        <section className="max-w-[1520px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-4">
+        <section className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-10 md:pt-14 pb-4">
           <div className="space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
               <div className="space-y-3">
-                <div className="flex items-center gap-2.5 text-[11px] font-mono-data tracking-[0.26em] uppercase text-[#059669] font-semibold">
+                <div className="flex items-center gap-2.5 text-[10px] sm:text-[11px] font-mono-data tracking-[0.2em] sm:tracking-[0.26em] uppercase text-[#059669] font-semibold">
                   <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
                   <span>COSMO STORE // 2026 COLLECTION</span>
                 </div>
-                <h1 className="font-serif-editorial text-4xl sm:text-5xl md:text-6xl font-normal tracking-[-0.02em] text-[#161514] leading-[1.08]">
+                <h1 className="font-serif-editorial text-3xl sm:text-5xl md:text-6xl font-normal tracking-[-0.02em] text-[#161514] leading-[1.1]">
                   The Best of <span className="italic font-light">Modern Apple</span>.
                 </h1>
-                <p className="text-neutral-600 font-light text-base md:text-lg max-w-2xl leading-relaxed">
+                <p className="text-neutral-600 font-light text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed">
                   Explore the latest iPhones, MacBooks, AirPods, and Apple Watches. 100% genuine Apple devices with official warranty and free insured delivery.
                 </p>
               </div>
 
               {/* Utility Tools Pill Toolbar: Compare & Installments & Owner */}
-              <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono-data">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono-data">
                 <button
                   onClick={() => setIsCompareOpen(true)}
                   className="py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 shadow-2xs transition-all flex items-center gap-2 group"
@@ -122,7 +122,7 @@ function HomeContent() {
         </section>
 
         {/* IMMEDIATE GALLERY GRID OF ALL PIECES */}
-        <section className="max-w-[1520px] mx-auto px-6 md:px-12 py-8 md:py-12">
+        <section className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-12">
           <div 
             key={activeCategory}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 animate-apple-fade-in"
@@ -138,8 +138,8 @@ function HomeContent() {
         </section>
 
         {/* Editorial Trust Banner (Clean, borderless, rounded) */}
-        <section className="max-w-[1520px] mx-auto px-6 md:px-12 pb-16">
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-[0_4px_24px_rgba(0,0,0,0.03)] grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 pb-16">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-12 shadow-[0_4px_24px_rgba(0,0,0,0.03)] grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             <div className="space-y-2">
               <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-[#059669] mb-3">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">

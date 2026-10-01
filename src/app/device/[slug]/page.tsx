@@ -470,15 +470,15 @@ export default function DeviceDetailPage() {
       />
 
       {/* Breadcrumb Navigation */}
-      <div className="max-w-[1360px] mx-auto w-full px-6 md:px-12 pt-6 pb-2 text-xs tracking-wider text-neutral-500 font-medium flex items-center justify-between">
-        <div className="flex items-center gap-2 font-mono-data text-[11px] uppercase tracking-wider">
+      <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 md:px-12 pt-4 sm:pt-6 pb-2 text-xs tracking-wider text-neutral-500 font-medium flex items-center justify-between">
+        <div className="flex items-center gap-2 font-mono-data text-[11px] uppercase tracking-wider flex-wrap">
           <Link href="/" className="hover:text-black transition-colors font-medium">
             COSMO Store
           </Link>
           <span className="text-neutral-300">/</span>
           <span className="capitalize text-neutral-600">{product.category}</span>
           <span className="text-neutral-300">/</span>
-          <span className="text-[#161514] font-semibold">{product.title}</span>
+          <span className="text-[#161514] font-semibold truncate max-w-[200px] sm:max-w-none">{product.title}</span>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-[#059669] font-mono-data font-medium text-[11px] uppercase tracking-wider">
           <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
@@ -487,7 +487,7 @@ export default function DeviceDetailPage() {
       </div>
 
       {/* Main Product Showcase Layout */}
-      <main className="max-w-[1360px] mx-auto px-6 md:px-12 py-8 md:py-12 flex-1">
+      <main className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-12 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
           {/* LEFT COLUMN: Gallery Showcase, Specs, & Bundle Builder (7 cols) */}

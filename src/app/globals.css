@@ -19,6 +19,17 @@
     --accent-cosmo: #059669;
   }
 
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    max-width: 100vw;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--bg-canvas);
     color: var(--text-ink);
@@ -28,8 +39,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
   }
 }
+
 
 /* Readable Luxury Editorial Typography */
 .font-serif-editorial {
