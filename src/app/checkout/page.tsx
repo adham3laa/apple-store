@@ -157,7 +157,7 @@ export const PICKUP_BRANCHES: PickupBranch[] = [
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, totalAmount, totalCount, clearCart } = useCart();
-  const { user: authUser, addresses, savedCards, addOrder } = useAuth();
+  const { user: authUser, addresses, savedCards, addOrder, openGoogleSignIn, logout } = useAuth();
   const { appliedCoupon, applyCoupon, removeAppliedCoupon, calculateDiscount } = useDiscounts();
 
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("auth");
@@ -182,8 +182,8 @@ export default function CheckoutPage() {
   const [shippingDetails, setShippingDetails] = useState({
     fullName: defaultAddress?.fullName || authUser?.name || "",
     phone: defaultAddress?.phone || authUser?.phone || "",
-    country: defaultAddress?.country || "Egypt",
-    city: defaultAddress?.city || "Cairo",
+    country: defaultAddress?.country || "United States",
+    city: defaultAddress?.city || "",
     streetAddress: defaultAddress?.streetAddress || "",
     buildingNumber: defaultAddress?.buildingNumber || "",
     postalCode: defaultAddress?.postalCode || "",
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState<string>("");
   const [isProcessingApplePay, setIsProcessingApplePay] = useState(false);
 
-  // Sync authUser on mount
+  // Sync authUser on mount and change
   useEffect(() => {
     if (authUser) {
       setUser(authUser);
@@ -244,6 +244,12 @@ export default function CheckoutPage() {
           postalCode: defaultAddress.postalCode,
           courierNotes: defaultAddress.courierNotes
         }));
+      } else {
+        setShippingDetails(prev => ({
+          ...prev,
+          fullName: prev.fullName || authUser.name,
+          phone: prev.phone || authUser.phone || ""
+        }));
       }
       if (defaultCard) {
         setCardDetails({
@@ -253,6 +259,12 @@ export default function CheckoutPage() {
           cvv: defaultCard.cvv
         });
       }
+      // If user was on auth step and signs in, move to address step
+      if (currentStep === "auth") {
+        setCurrentStep("address");
+      }
+    } else {
+      setUser(null);
     }
   }, [authUser]);
 
@@ -334,30 +346,21 @@ export default function CheckoutPage() {
     return true;
   };
 
-  // Handle Google OAuth Simulation
+  // Handle Google OAuth
   const handleGoogleAuth = () => {
-    const mockGoogleUser: UserProfile = {
-      name: "Adham Alaa",
-      email: "adham.alaa@gmail.com",
-      phone: "+20 100 123 4567",
-      provider: "google"
-    };
-    setUser(mockGoogleUser);
-    setShippingDetails(prev => ({
-      ...prev,
-      fullName: mockGoogleUser.name
-    }));
-    setCurrentStep("address");
+    openGoogleSignIn();
   };
 
   // Handle Standard Email Auth
   const handleEmailAuth = (e: React.FormEvent) => {
     e.preventDefault();
     if (!authEmail) return;
+    const cleanEmail = authEmail.trim();
+    const cleanName = authName.trim() || cleanEmail.split("@")[0];
     const standardUser: UserProfile = {
-      name: authName || authEmail.split("@")[0],
-      email: authEmail,
-      phone: "+20 100 000 0000",
+      name: cleanName,
+      email: cleanEmail,
+      phone: "",
       provider: "email"
     };
     setUser(standardUser);
@@ -371,8 +374,8 @@ export default function CheckoutPage() {
   // Handle Guest Checkout
   const handleGuestCheckout = () => {
     setUser({
-      name: "Private Client",
-      email: "client@cosmo-atelier.com",
+      name: "Guest Client",
+      email: authEmail.trim() || "guest@cosmo-store.com",
       phone: "",
       provider: "guest"
     });
@@ -853,7 +856,7 @@ export default function CheckoutPage() {
                               required
                               value={authName}
                               onChange={(e) => setAuthName(e.target.value)}
-                              placeholder="Adham Alaa"
+                              placeholder="e.g. John Doe"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -868,7 +871,7 @@ export default function CheckoutPage() {
                             required
                             value={authEmail}
                             onChange={(e) => setAuthEmail(e.target.value)}
-                            placeholder="client@cosmo-atelier.com"
+                            placeholder="name@example.com"
                             className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                           />
                         </div>
@@ -1092,7 +1095,7 @@ export default function CheckoutPage() {
                                 required
                                 value={shippingDetails.fullName}
                                 onChange={(e) => setShippingDetails({ ...shippingDetails, fullName: e.target.value })}
-                                placeholder="Adham Alaa"
+                                placeholder="Full legal name"
                                 className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                               />
                             </div>
@@ -1105,7 +1108,7 @@ export default function CheckoutPage() {
                                 required
                                 value={shippingDetails.phone}
                                 onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
-                                placeholder="+20 100 000 0000"
+                                placeholder="e.g. +1 555 123 4567"
                                 className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                               />
                             </div>
@@ -1125,7 +1128,7 @@ export default function CheckoutPage() {
                               required
                               value={shippingDetails.fullName}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, fullName: e.target.value })}
-                              placeholder="Adham Alaa"
+                              placeholder="Full recipient name"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -1139,7 +1142,7 @@ export default function CheckoutPage() {
                               required
                               value={shippingDetails.phone}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
-                              placeholder="+20 100 000 0000"
+                              placeholder="e.g. +1 555 123 4567"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -1155,25 +1158,27 @@ export default function CheckoutPage() {
                               onChange={(e) => setShippingDetails({ ...shippingDetails, country: e.target.value })}
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             >
-                              <option value="Egypt">Egypt</option>
-                              <option value="United Arab Emirates">United Arab Emirates</option>
-                              <option value="Saudi Arabia">Saudi Arabia</option>
                               <option value="United States">United States</option>
                               <option value="United Kingdom">United Kingdom</option>
+                              <option value="United Arab Emirates">United Arab Emirates</option>
+                              <option value="Saudi Arabia">Saudi Arabia</option>
+                              <option value="Egypt">Egypt</option>
                               <option value="Germany">Germany</option>
+                              <option value="France">France</option>
+                              <option value="Canada">Canada</option>
                             </select>
                           </div>
 
                           <div>
                             <label className="block text-[10px] font-mono-data uppercase tracking-wider text-neutral-500 mb-1.5">
-                              City / Governorate *
+                              City / Region *
                             </label>
                             <input
                               type="text"
                               required
                               value={shippingDetails.city}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, city: e.target.value })}
-                              placeholder="e.g. Cairo, Giza, Alexandria"
+                              placeholder="e.g. New York, London, Dubai"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -1188,7 +1193,7 @@ export default function CheckoutPage() {
                             required
                             value={shippingDetails.streetAddress}
                             onChange={(e) => setShippingDetails({ ...shippingDetails, streetAddress: e.target.value })}
-                            placeholder="e.g. 14 El-Thawra St, Heliopolis"
+                            placeholder="Street name, district, or avenue"
                             className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                           />
                         </div>
@@ -1202,7 +1207,7 @@ export default function CheckoutPage() {
                               type="text"
                               value={shippingDetails.buildingNumber}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, buildingNumber: e.target.value })}
-                              placeholder="Bldg 12, Floor 4, Apt 402"
+                              placeholder="Apt 4B / Suite 200"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -1215,7 +1220,7 @@ export default function CheckoutPage() {
                               type="text"
                               value={shippingDetails.postalCode}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, postalCode: e.target.value })}
-                              placeholder="11757"
+                              placeholder="e.g. 10001"
                               className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
                             />
                           </div>
@@ -1561,7 +1566,7 @@ export default function CheckoutPage() {
                               maxLength={19}
                               value={cardDetails.cardNumber}
                               onChange={handleCardNumberChange}
-                              placeholder="4532 8920 1289 4432"
+                              placeholder="•••• •••• •••• ••••"
                               className={`w-full px-4 py-3 pr-20 rounded-xl border text-xs bg-neutral-50/50 font-mono-data transition-colors focus:outline-none ${
                                 cardErrors.cardNumber
                                   ? "border-rose-400 bg-rose-50/20 focus:border-rose-600 ring-1 ring-rose-300"

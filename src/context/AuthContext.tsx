@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { COSMO_CATALOG, CosmoProduct } from "../data/cosmo-catalog";
+import { GoogleSignInModal } from "../components/cosmo/GoogleSignInModal";
 
 export interface UserProfile {
   id: string;
@@ -108,7 +109,10 @@ interface AuthContextType {
   addresses: SavedAddress[];
   savedCards: SavedCard[];
   orders: Order[];
-  loginWithGoogle: () => void;
+  isGoogleModalOpen: boolean;
+  openGoogleSignIn: () => void;
+  closeGoogleSignIn: () => void;
+  loginWithGoogle: (profile?: { name: string; email: string; avatar?: string }) => void;
   loginWithEmail: (email: string, name?: string) => void;
   logout: () => void;
   updateProfile: (data: Partial<UserProfile>) => void;
@@ -189,126 +193,63 @@ export function buildTimeline(currentMilestone: OrderMilestone, createdAt: strin
   });
 }
 
-// Initial default user
-const DEFAULT_USER: UserProfile = {
-  id: "usr-adham",
-  name: "Adham Alaa",
-  email: "adham.alaa@gmail.com",
-  phone: "+20 100 123 4567",
-  provider: "google",
-  avatar: "AA"
-};
-
-// Initial default address
-const DEFAULT_ADDRESSES: SavedAddress[] = [
-  {
-    id: "addr-cairo",
-    fullName: "Adham Alaa",
-    phone: "+20 100 123 4567",
-    country: "Egypt",
-    city: "Cairo",
-    streetAddress: "14 El-Thawra St, Heliopolis",
-    buildingNumber: "Bldg 8, 4th Floor, Apt 402",
-    postalCode: "11757",
-    courierNotes: "Ring doorbell; courier may call upon arrival.",
-    isDefault: true
-  },
-  {
-    id: "addr-alex",
-    fullName: "Adham Alaa",
-    phone: "+20 100 123 4567",
-    country: "Egypt",
-    city: "Alexandria",
-    streetAddress: "22 Corniche Road, Stanley",
-    buildingNumber: "Palais Stanley, 7th Floor",
-    postalCode: "21500",
-    courierNotes: "Leave with building reception if unavailable.",
-    isDefault: false
-  }
-];
-
-// Initial default cards
-const DEFAULT_CARDS: SavedCard[] = [
-  {
-    id: "card-visa-primary",
-    cardholder: "ADHAM ALAA",
-    cardNumber: "4532 •••• •••• 8941",
-    cleanNumber: "45328941",
-    expiry: "09 / 28",
-    cvv: "841",
-    brand: "visa",
-    isDefault: true
-  },
-  {
-    id: "card-mc-secondary",
-    cardholder: "ADHAM ALAA",
-    cardNumber: "5412 •••• •••• 2049",
-    cleanNumber: "54122049",
-    expiry: "11 / 27",
-    cvv: "329",
-    brand: "mastercard",
-    isDefault: false
-  }
-];
-
-// Initial seeded order for rich order history & tracking experience
-const INITIAL_SEED_ORDERS: Order[] = [
-  {
-    id: "CSM-2026-48192",
-    createdAt: "2026-09-12T14:30:00Z",
-    status: "courier_dispatched",
-    statusLabel: "Shipped with Courier",
-    items: [
-      {
-        product: COSMO_CATALOG[0], // iPhone 16 Pro
-        selectedFinish: "Desert Titanium // 256GB",
-        quantity: 1
-      },
-      {
-        product: COSMO_CATALOG[4], // AirPods Max
-        selectedFinish: "Starlight",
-        quantity: 1
-      }
-    ],
-    shippingAddress: DEFAULT_ADDRESSES[0],
-    shippingMethod: "express",
-    shippingCost: 25,
-    paymentMethod: "card",
-    cardBrand: "visa",
-    cardLast4: "8941",
-    totalAmount: 1573,
-    trackingCode: "TRK-2026-99214",
-    estimatedDelivery: "Tomorrow by 2:00 PM",
-    courier: {
-      name: "Karim Hassan",
-      vehicle: "Climate-Regulated Vault Van #12",
-      phone: "+20 102 984 5512",
-      securityPin: "4921"
-    },
-    timeline: buildTimeline("courier_dispatched", "2026-09-12T14:30:00Z")
-  }
-];
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(DEFAULT_USER);
-  const [addresses, setAddresses] = useState<SavedAddress[]>(DEFAULT_ADDRESSES);
-  const [savedCards, setSavedCards] = useState<SavedCard[]>(DEFAULT_CARDS);
-  const [orders, setOrders] = useState<Order[]>(INITIAL_SEED_ORDERS);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [addresses, setAddresses] = useState<SavedAddress[]>([]);
+  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
 
-  // Load from localStorage on client mount
+  // Load from localStorage on client mount, safely purging old dummy mock data
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-      if (storedUser) setUser(JSON.parse(storedUser));
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        // Automatically purge any old hardcoded mock data
+        if (parsed.id === "usr-adham" || parsed.email === "adham.alaa@gmail.com") {
+          localStorage.removeItem(USER_STORAGE_KEY);
+          localStorage.removeItem(ADDRESSES_STORAGE_KEY);
+          localStorage.removeItem(CARDS_STORAGE_KEY);
+          localStorage.removeItem(ORDERS_STORAGE_KEY);
+          setUser(null);
+          setAddresses([]);
+          setSavedCards([]);
+          setOrders([]);
+          return;
+        }
+        setUser(parsed);
+      }
 
       const storedAddresses = localStorage.getItem(ADDRESSES_STORAGE_KEY);
-      if (storedAddresses) setAddresses(JSON.parse(storedAddresses));
+      if (storedAddresses) {
+        const parsed = JSON.parse(storedAddresses);
+        // Filter out old mock addresses
+        const clean = Array.isArray(parsed) 
+          ? parsed.filter((a: SavedAddress) => a.id !== "addr-cairo" && a.id !== "addr-alex" && !a.streetAddress.includes("El-Thawra"))
+          : [];
+        setAddresses(clean);
+      }
 
       const storedCards = localStorage.getItem(CARDS_STORAGE_KEY);
-      if (storedCards) setSavedCards(JSON.parse(storedCards));
+      if (storedCards) {
+        const parsed = JSON.parse(storedCards);
+        // Filter out old mock cards
+        const clean = Array.isArray(parsed)
+          ? parsed.filter((c: SavedCard) => c.id !== "card-visa-primary" && c.id !== "card-mc-secondary" && !c.cardholder.includes("ADHAM"))
+          : [];
+        setSavedCards(clean);
+      }
 
       const storedOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
-      if (storedOrders) setOrders(JSON.parse(storedOrders));
+      if (storedOrders) {
+        const parsed = JSON.parse(storedOrders);
+        // Filter out old mock seed order
+        const clean = Array.isArray(parsed)
+          ? parsed.filter((o: Order) => o.id !== "CSM-2026-48192")
+          : [];
+        setOrders(clean);
+      }
     } catch (e) {
       console.error("Failed to load auth data from localStorage", e);
     }
@@ -343,18 +284,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Actions
-  const loginWithGoogle = () => {
-    saveUser(DEFAULT_USER);
+  const openGoogleSignIn = () => setIsGoogleModalOpen(true);
+  const closeGoogleSignIn = () => setIsGoogleModalOpen(false);
+
+  const loginWithGoogle = (profile?: { name: string; email: string; avatar?: string }) => {
+    if (profile) {
+      const cleanEmail = profile.email.trim();
+      const cleanName = profile.name.trim() || cleanEmail.split("@")[0];
+      const newUser: UserProfile = {
+        id: `usr-google-${Date.now()}`,
+        name: cleanName,
+        email: cleanEmail,
+        phone: "",
+        provider: "google",
+        avatar: profile.avatar || cleanName.slice(0, 2).toUpperCase()
+      };
+      saveUser(newUser);
+      setIsGoogleModalOpen(false);
+      return;
+    }
+    // Open Google Sign-In modal
+    setIsGoogleModalOpen(true);
   };
 
   const loginWithEmail = (email: string, name?: string) => {
+    const cleanEmail = email.trim();
+    const cleanName = name?.trim() || cleanEmail.split("@")[0];
     const newUser: UserProfile = {
       id: `usr-${Date.now()}`,
-      name: name || email.split("@")[0],
-      email,
-      phone: "+20 100 000 0000",
+      name: cleanName,
+      email: cleanEmail,
+      phone: "",
       provider: "email",
-      avatar: (name || email).slice(0, 2).toUpperCase()
+      avatar: cleanName.slice(0, 2).toUpperCase()
     };
     saveUser(newUser);
   };
@@ -524,6 +486,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         addresses,
         savedCards,
         orders,
+        isGoogleModalOpen,
+        openGoogleSignIn,
+        closeGoogleSignIn,
         loginWithGoogle,
         loginWithEmail,
         logout,
@@ -542,6 +507,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+      <GoogleSignInModal
+        isOpen={isGoogleModalOpen}
+        onClose={closeGoogleSignIn}
+        onSuccess={(profile) => loginWithGoogle(profile)}
+      />
     </AuthContext.Provider>
   );
 }

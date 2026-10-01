@@ -106,6 +106,7 @@ function AccountContent() {
     addresses,
     savedCards,
     loginWithGoogle,
+    openGoogleSignIn,
     loginWithEmail,
     logout,
     updateProfile,
@@ -122,6 +123,11 @@ function AccountContent() {
   const [activeTab, setActiveTab] = useState<AccountTab>(initialTab);
   const [selectedOrderId, setSelectedOrderId] = useState<string>(orders[0]?.id || "");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Email login form state
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [authEmailInput, setAuthEmailInput] = useState("");
+  const [authNameInput, setAuthNameInput] = useState("");
 
   // Sync tab from URL if changed
   useEffect(() => {
@@ -316,28 +322,94 @@ function AccountContent() {
               </p>
             </div>
 
-            <div className="space-y-3 pt-2">
-              <button
-                type="button"
-                onClick={loginWithGoogle}
-                className="w-full py-3.5 px-4 rounded-2xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-all flex items-center justify-center gap-3 text-xs font-medium text-[#161514] shadow-2xs group"
-              >
-                <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <span>Continue with Google</span>
-              </button>
+            <div className="pt-2">
+              {!showEmailForm ? (
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={openGoogleSignIn}
+                    className="w-full py-3.5 px-4 rounded-2xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-all flex items-center justify-center gap-3 text-xs font-medium text-[#161514] shadow-2xs group"
+                  >
+                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                  </button>
 
-              <button
-                type="button"
-                onClick={() => loginWithEmail("client@cosmo-atelier.com", "Adham Alaa")}
-                className="w-full py-3.5 px-4 rounded-2xl bg-[#161514] hover:bg-neutral-800 text-[#FAF8F5] transition-all text-xs font-mono-data uppercase tracking-wider font-semibold shadow-xs"
-              >
-                Sign In with Email
-              </button>
+                  <div className="relative flex items-center justify-center py-1">
+                    <div className="border-t border-neutral-200 w-full" />
+                    <span className="bg-white px-3 text-[10px] font-mono-data uppercase tracking-widest text-neutral-400 absolute">
+                      OR
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowEmailForm(true)}
+                    className="w-full py-3.5 px-4 rounded-2xl bg-[#161514] hover:bg-neutral-800 text-[#FAF8F5] transition-all text-xs font-mono-data uppercase tracking-wider font-semibold shadow-xs"
+                  >
+                    Sign In with Email
+                  </button>
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!authEmailInput.trim()) return;
+                    loginWithEmail(
+                      authEmailInput.trim(),
+                      authNameInput.trim() || authEmailInput.trim().split("@")[0]
+                    );
+                  }}
+                  className="space-y-4 text-left"
+                >
+                  <div>
+                    <label className="block text-[10px] font-mono-data uppercase tracking-wider text-neutral-500 mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={authEmailInput}
+                      onChange={(e) => setAuthEmailInput(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-mono-data uppercase tracking-wider text-neutral-500 mb-1">
+                      Full Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={authNameInput}
+                      onChange={(e) => setAuthNameInput(e.target.value)}
+                      placeholder="e.g. John Doe"
+                      className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-black focus:outline-none text-xs bg-neutral-50/50"
+                    />
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 px-4 rounded-2xl bg-[#161514] hover:bg-neutral-800 text-[#FAF8F5] transition-all text-xs font-mono-data uppercase tracking-wider font-semibold shadow-xs"
+                    >
+                      Sign In & Continue
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowEmailForm(false)}
+                      className="w-full py-2 text-xs font-mono-data uppercase tracking-wider text-neutral-400 hover:text-black transition-colors"
+                    >
+                      ← Return to Google Sign In
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </main>
@@ -725,82 +797,99 @@ function AccountContent() {
             </div>
 
             {/* Address Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {addresses.map((addr) => (
-                <div
-                  key={addr.id}
-                  className={`bg-white rounded-3xl p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] border transition-all flex flex-col justify-between ${
-                    addr.isDefault ? "border-black ring-1 ring-black" : "border-neutral-200"
-                  }`}
+            {addresses.length === 0 ? (
+              <div className="bg-white rounded-3xl p-12 text-center shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-neutral-200/60 max-w-md mx-auto space-y-4">
+                <PinLocationIcon className="w-8 h-8 mx-auto text-neutral-400" />
+                <h3 className="font-serif-editorial text-2xl font-medium text-[#161514]">No Saved Addresses</h3>
+                <p className="text-xs text-neutral-500 leading-relaxed">
+                  You haven&apos;t saved any shipping addresses yet. Add one for rapid delivery to your home or office.
+                </p>
+                <button
+                  type="button"
+                  onClick={openAddAddress}
+                  className="inline-block px-6 py-3 rounded-full bg-[#161514] text-white text-xs font-mono-data uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-colors"
                 >
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-[#161514] text-sm">
-                        {addr.fullName}
-                      </span>
-                      {addr.isDefault && (
-                        <span className="text-[9px] font-mono-data bg-emerald-50 text-[#059669] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                          DEFAULT ADDRESS
+                  + Add Delivery Address
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {addresses.map((addr) => (
+                  <div
+                    key={addr.id}
+                    className={`bg-white rounded-3xl p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] border transition-all flex flex-col justify-between ${
+                      addr.isDefault ? "border-black ring-1 ring-black" : "border-neutral-200"
+                    }`}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-[#161514] text-sm">
+                          {addr.fullName}
                         </span>
+                        {addr.isDefault && (
+                          <span className="text-[9px] font-mono-data bg-emerald-50 text-[#059669] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            DEFAULT ADDRESS
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-neutral-600 leading-relaxed font-sans-body">
+                        {addr.buildingNumber && `${addr.buildingNumber}, `}
+                        {addr.streetAddress}
+                        <br />
+                        {addr.city}, {addr.postalCode && `${addr.postalCode}, `}{addr.country}
+                      </p>
+
+                      <p className="text-xs font-mono-data text-neutral-500">
+                        Contact: {addr.phone}
+                      </p>
+
+                      {addr.courierNotes && (
+                        <div className="text-[11px] text-neutral-500 bg-[#FAF8F5] p-3 rounded-xl border border-neutral-100 font-sans-body italic">
+                          &ldquo;{addr.courierNotes}&rdquo;
+                        </div>
                       )}
                     </div>
 
-                    <p className="text-xs text-neutral-600 leading-relaxed font-sans-body">
-                      {addr.buildingNumber && `${addr.buildingNumber}, `}
-                      {addr.streetAddress}
-                      <br />
-                      {addr.city}, {addr.postalCode && `${addr.postalCode}, `}{addr.country}
-                    </p>
-
-                    <p className="text-xs font-mono-data text-neutral-500">
-                      Contact: {addr.phone}
-                    </p>
-
-                    {addr.courierNotes && (
-                      <div className="text-[11px] text-neutral-500 bg-[#FAF8F5] p-3 rounded-xl border border-neutral-100 font-sans-body italic">
-                        &ldquo;{addr.courierNotes}&rdquo;
-                      </div>
-                    )}
+                    <div className="flex items-center gap-3 pt-5 mt-4 border-t border-neutral-100 text-xs font-mono-data uppercase tracking-wider">
+                      <button
+                        type="button"
+                        onClick={() => openEditAddress(addr)}
+                        className="text-neutral-800 hover:text-black font-semibold underline"
+                      >
+                        Edit Address
+                      </button>
+                      {!addr.isDefault && (
+                        <>
+                          <span className="text-neutral-300">|</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDefaultAddress(addr.id);
+                              showToast("Default address updated.");
+                            }}
+                            className="text-neutral-500 hover:text-black"
+                          >
+                            Set Default
+                          </button>
+                          <span className="text-neutral-300">|</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              deleteAddress(addr.id);
+                              showToast("Address removed.");
+                            }}
+                            className="text-neutral-400 hover:text-red-600"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-3 pt-5 mt-4 border-t border-neutral-100 text-xs font-mono-data uppercase tracking-wider">
-                    <button
-                      type="button"
-                      onClick={() => openEditAddress(addr)}
-                      className="text-neutral-800 hover:text-black font-semibold underline"
-                    >
-                      Edit Address
-                    </button>
-                    {!addr.isDefault && (
-                      <>
-                        <span className="text-neutral-300">|</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDefaultAddress(addr.id);
-                            showToast("Default address updated.");
-                          }}
-                          className="text-neutral-500 hover:text-black"
-                        >
-                          Set Default
-                        </button>
-                        <span className="text-neutral-300">|</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            deleteAddress(addr.id);
-                            showToast("Address removed.");
-                          }}
-                          className="text-neutral-400 hover:text-red-600"
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* ADDRESS MODAL (ADD / EDIT) */}
             {isAddressModalOpen && (
@@ -989,108 +1078,125 @@ function AccountContent() {
             </div>
 
             {/* Saved Cards Gallery */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {savedCards.map((c) => (
-                <div key={c.id} className="space-y-3">
-                  {/* Interactive Obsidian Metallic Card Preview */}
-                  <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-tr from-[#161514] via-[#262422] to-[#161514] text-white p-6 shadow-lg border aspect-[1.586/1] flex flex-col justify-between ${
-                    c.isDefault ? "border-amber-400/50 ring-1 ring-amber-400/30" : "border-white/10"
-                  }`}>
-                    {/* Metallic shimmer effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 pointer-events-none" />
+            {savedCards.length === 0 ? (
+              <div className="bg-white rounded-3xl p-12 text-center shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-neutral-200/60 max-w-md mx-auto space-y-4">
+                <CardIcon className="w-8 h-8 mx-auto text-neutral-400" />
+                <h3 className="font-serif-editorial text-2xl font-medium text-[#161514]">No Saved Cards</h3>
+                <p className="text-xs text-neutral-500 leading-relaxed">
+                  You haven&apos;t saved any payment methods yet. Add a card for secure 1-click checkout.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsCardModalOpen(true)}
+                  className="inline-block px-6 py-3 rounded-full bg-[#161514] text-white text-xs font-mono-data uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-colors"
+                >
+                  + Add Payment Card
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {savedCards.map((c) => (
+                  <div key={c.id} className="space-y-3">
+                    {/* Interactive Obsidian Metallic Card Preview */}
+                    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-tr from-[#161514] via-[#262422] to-[#161514] text-white p-6 shadow-lg border aspect-[1.586/1] flex flex-col justify-between ${
+                      c.isDefault ? "border-amber-400/50 ring-1 ring-amber-400/30" : "border-white/10"
+                    }`}>
+                      {/* Metallic shimmer effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 pointer-events-none" />
 
-                    {/* Top Row: Chip & Brand */}
-                    <div className="flex items-center justify-between z-10">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-7 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 p-1 flex items-center justify-center shadow-inner border border-amber-300/40">
-                          <div className="w-full h-full border border-amber-900/30 rounded-xs grid grid-cols-2 gap-0.5 p-0.5">
-                            <div className="border-r border-b border-amber-900/30" />
-                            <div className="border-b border-amber-900/30" />
-                            <div className="border-r border-amber-900/30" />
-                            <div />
+                      {/* Top Row: Chip & Brand */}
+                      <div className="flex items-center justify-between z-10">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-7 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 p-1 flex items-center justify-center shadow-inner border border-amber-300/40">
+                            <div className="w-full h-full border border-amber-900/30 rounded-xs grid grid-cols-2 gap-0.5 p-0.5">
+                              <div className="border-r border-b border-amber-900/30" />
+                              <div className="border-b border-amber-900/30" />
+                              <div className="border-r border-amber-900/30" />
+                              <div />
+                            </div>
+                          </div>
+                          <svg className="w-5 h-5 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                            <path d="M8.5 16.5a5 5 0 0 1 0-7" strokeLinecap="round" />
+                            <path d="M12 19a8.5 8.5 0 0 1 0-12" strokeLinecap="round" />
+                            <path d="M15.5 21.5a12 12 0 0 1 0-17" strokeLinecap="round" />
+                          </svg>
+                        </div>
+
+                        <div className="flex items-center">
+                          {c.brand === "visa" && <VisaBadge />}
+                          {c.brand === "mastercard" && <MastercardBadge />}
+                          {c.brand === "amex" && <AmexBadge />}
+                          {c.brand === "generic" && (
+                            <span className="text-[10px] font-mono-data uppercase tracking-widest text-neutral-400">
+                              COSMO
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Masked Number */}
+                      <div className="z-10 py-1 font-mono-data tracking-[0.22em] text-base font-medium text-white/90">
+                        {c.cardNumber}
+                      </div>
+
+                      {/* Bottom Row */}
+                      <div className="flex items-end justify-between text-xs z-10 pt-1">
+                        <div>
+                          <div className="text-[8px] font-mono-data uppercase tracking-widest text-neutral-400 mb-0.5">
+                            CARDHOLDER
+                          </div>
+                          <div className="font-sans-body font-medium uppercase tracking-wider text-xs truncate max-w-[140px] text-white/90">
+                            {c.cardholder}
                           </div>
                         </div>
-                        <svg className="w-5 h-5 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                          <path d="M8.5 16.5a5 5 0 0 1 0-7" strokeLinecap="round" />
-                          <path d="M12 19a8.5 8.5 0 0 1 0-12" strokeLinecap="round" />
-                          <path d="M15.5 21.5a12 12 0 0 1 0-17" strokeLinecap="round" />
-                        </svg>
-                      </div>
-
-                      <div className="flex items-center">
-                        {c.brand === "visa" && <VisaBadge />}
-                        {c.brand === "mastercard" && <MastercardBadge />}
-                        {c.brand === "amex" && <AmexBadge />}
-                        {c.brand === "generic" && (
-                          <span className="text-[10px] font-mono-data uppercase tracking-widest text-neutral-400">
-                            COSMO
-                          </span>
-                        )}
+                        <div className="text-right">
+                          <div className="text-[8px] font-mono-data uppercase tracking-widest text-neutral-400 mb-0.5">
+                            EXPIRES
+                          </div>
+                          <div className="font-mono-data font-medium tracking-wider text-xs text-white/90">
+                            {c.expiry}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Masked Number */}
-                    <div className="z-10 py-1 font-mono-data tracking-[0.22em] text-base font-medium text-white/90">
-                      {c.cardNumber}
-                    </div>
+                    {/* Card Controls */}
+                    <div className="flex items-center justify-between text-xs font-mono-data uppercase tracking-wider px-2">
+                      {c.isDefault ? (
+                        <span className="text-[#059669] font-bold text-[10px] flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                          <span>DEFAULT CARD</span>
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDefaultCard(c.id);
+                            showToast("Default payment card updated.");
+                          }}
+                          className="text-neutral-500 hover:text-black text-[11px]"
+                        >
+                          Set Default
+                        </button>
+                      )}
 
-                    {/* Bottom Row */}
-                    <div className="flex items-end justify-between text-xs z-10 pt-1">
-                      <div>
-                        <div className="text-[8px] font-mono-data uppercase tracking-widest text-neutral-400 mb-0.5">
-                          CARDHOLDER
-                        </div>
-                        <div className="font-sans-body font-medium uppercase tracking-wider text-xs truncate max-w-[140px] text-white/90">
-                          {c.cardholder}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[8px] font-mono-data uppercase tracking-widest text-neutral-400 mb-0.5">
-                          EXPIRES
-                        </div>
-                        <div className="font-mono-data font-medium tracking-wider text-xs text-white/90">
-                          {c.expiry}
-                        </div>
-                      </div>
+                      {!c.isDefault && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            deleteCard(c.id);
+                            showToast("Card removed.");
+                          }}
+                          className="text-neutral-400 hover:text-red-600 text-[11px]"
+                        >
+                          Remove
+                        </button>
+                      )}
                     </div>
                   </div>
-
-                  {/* Card Controls */}
-                  <div className="flex items-center justify-between text-xs font-mono-data uppercase tracking-wider px-2">
-                    {c.isDefault ? (
-                      <span className="text-[#059669] font-bold text-[10px] flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
-                        <span>DEFAULT CARD</span>
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDefaultCard(c.id);
-                          showToast("Default payment card updated.");
-                        }}
-                        className="text-neutral-500 hover:text-black text-[11px]"
-                      >
-                        Set Default
-                      </button>
-                    )}
-
-                    {!c.isDefault && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          deleteCard(c.id);
-                          showToast("Card removed.");
-                        }}
-                        className="text-neutral-400 hover:text-red-600 text-[11px]"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* ADD CARD MODAL */}
             {isCardModalOpen && (
@@ -1135,7 +1241,7 @@ function AccountContent() {
                           maxLength={19}
                           value={cardForm.cardNumber}
                           onChange={handleCardNumberChange}
-                          placeholder="4532 8920 1289 4432"
+                          placeholder="•••• •••• •••• ••••"
                           className="w-full px-3.5 py-2.5 pr-14 rounded-xl border border-neutral-200 text-xs font-mono-data"
                         />
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">

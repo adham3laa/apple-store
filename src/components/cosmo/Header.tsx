@@ -22,7 +22,7 @@ export function Header({
 }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, orders, logout } = useAuth();
+  const { user, orders, logout, openGoogleSignIn } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -144,16 +144,17 @@ export function Header({
                 </svg>
               </button>
             ) : (
-              <Link
-                href="/account"
-                className="flex items-center gap-2 py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[#161514] text-xs font-mono-data uppercase tracking-wider transition-colors"
+              <button
+                type="button"
+                onClick={openGoogleSignIn}
+                className="flex items-center gap-2 py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[#161514] text-xs font-mono-data uppercase tracking-wider transition-colors shadow-2xs group"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
                 <span className="hidden sm:inline">Sign In</span>
-              </Link>
+              </button>
             )}
 
             {/* Account Luxury Dropdown Menu */}
