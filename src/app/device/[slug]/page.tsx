@@ -487,15 +487,30 @@ export default function DeviceDetailPage() {
       </div>
 
       {/* Main Product Showcase Layout */}
-      <main className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-12 flex-1">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <main className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-12 py-4 sm:py-8 md:py-12 flex-1">
+        
+        {/* Mobile Product Title Bar (Shown only on mobile screens directly above the image) */}
+        <div className="lg:hidden mb-4 space-y-1">
+          <div className="text-[10px] font-mono-data tracking-[0.2em] uppercase text-[#059669] font-bold flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+            <span>ORIGINAL APPLE // MODEL #{product.id}</span>
+          </div>
+          <h1 className="font-serif-editorial text-2xl sm:text-3xl font-medium text-[#161514] tracking-tight leading-tight">
+            {product.title}
+          </h1>
+          <p className="text-xs text-neutral-600 font-light leading-relaxed font-sans-body">
+            {product.curatorialSubtitle}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
 
           {/* LEFT COLUMN: Gallery Showcase, Specs, & Bundle Builder (7 cols) */}
-          <div className="lg:col-span-7 space-y-12">
+          <div className="lg:col-span-7 space-y-8 lg:space-y-12">
             
             {/* Interactive Image Showcase */}
             <div className="space-y-4">
-              <div className="w-full h-[360px] sm:h-[430px] bg-white rounded-3xl flex items-center justify-center p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all relative overflow-hidden group border border-neutral-100/80">
+              <div className="w-full h-[320px] sm:h-[400px] md:h-[440px] bg-white rounded-3xl flex items-center justify-center p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] transition-all relative overflow-hidden group border border-neutral-100/80">
                 {/* Dynamic Ambient Halo Glow matching device finish */}
                 <div 
                   className="absolute inset-0 pointer-events-none transition-all duration-700 opacity-20 filter blur-3xl rounded-full scale-125"
@@ -504,7 +519,7 @@ export default function DeviceDetailPage() {
                   }}
                 />
 
-                {/* Layered Hardware Image Stack for 100% Continuous Zero-Flicker Crossfade */}
+                {/* Layered Hardware Image Stack for 100% Continuous Zero-Flicker Snappy Crossfade */}
                 <div className="relative w-full h-full flex items-center justify-center">
                   {finishes.length > 0 ? (
                     finishes.map((finish, fIdx) => {
@@ -514,7 +529,7 @@ export default function DeviceDetailPage() {
                           key={finish.id}
                           src={finish.heroImage}
                           alt={`${product.title} in ${finish.name}`}
-                          className={`absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03] pointer-events-none ${
+                          className={`absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-400 ease-out group-hover:scale-[1.03] pointer-events-none ${
                             isFinishActive
                               ? 'opacity-100 scale-100 z-10'
                               : 'opacity-0 scale-[0.985] z-0'
@@ -526,7 +541,7 @@ export default function DeviceDetailPage() {
                     <img
                       src={product.primaryImage}
                       alt={product.title}
-                      className="absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]"
+                      className="absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-400 ease-out group-hover:scale-[1.03]"
                     />
                   )}
 
@@ -536,7 +551,7 @@ export default function DeviceDetailPage() {
                       key={selectedImageOverride}
                       src={selectedImageOverride}
                       alt={`${product.title} angle preview`}
-                      className="absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-100 scale-100 z-20 group-hover:scale-[1.03] animate-apple-fade-in pointer-events-none"
+                      className="absolute inset-0 m-auto max-h-full max-w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-400 ease-out opacity-100 scale-100 z-20 group-hover:scale-[1.03] animate-apple-fade-in pointer-events-none"
                     />
                   )}
                 </div>
@@ -559,12 +574,14 @@ export default function DeviceDetailPage() {
               {product.galleryImages && product.galleryImages.length > 0 && (
                 <div className="flex items-center gap-3 overflow-x-auto py-2 hide-scrollbar">
                   <button
+                    type="button"
                     onClick={() => setSelectedImageOverride(null)}
                     className={`w-16 h-16 rounded-xl flex-shrink-0 bg-white p-2 transition-all duration-300 apple-tap-press cursor-pointer ${
-                      activeDeviceImage === (activeFinish?.heroImage || product.primaryImage)
+                      selectedImageOverride === null
                         ? 'ring-2 ring-black shadow-sm scale-105'
                         : 'opacity-70 hover:opacity-100 hover:scale-102 border border-neutral-200/60'
                     }`}
+                    title={`${product.title} - ${activeFinish?.name || 'Primary'}`}
                   >
                     <img
                       src={activeFinish?.heroImage || product.primaryImage}
@@ -576,9 +593,10 @@ export default function DeviceDetailPage() {
                   {product.galleryImages.map((img, idx) => (
                     <button
                       key={idx}
+                      type="button"
                       onClick={() => setSelectedImageOverride(img.url)}
                       className={`w-16 h-16 rounded-xl flex-shrink-0 bg-white p-2 transition-all duration-300 apple-tap-press cursor-pointer ${
-                        activeDeviceImage === img.url
+                        selectedImageOverride === img.url
                           ? 'ring-2 ring-black shadow-sm scale-105'
                           : 'opacity-70 hover:opacity-100 hover:scale-102 border border-neutral-200/60'
                       }`}
@@ -593,6 +611,317 @@ export default function DeviceDetailPage() {
                   ))}
                 </div>
               )}
+
+              {/* DIRECT HARDWARE CONFIGURATION CONSOLE (Color Finishes & Storage Space directly under the picture) */}
+              <div className="bg-white rounded-3xl p-5 sm:p-7 border border-neutral-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] space-y-6">
+                
+                {/* 1. FINISH / COLORWAY SELECTOR */}
+                {finishes.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs font-mono-data uppercase tracking-wider">
+                      <span className="text-neutral-500 font-semibold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+                        <span>Finish</span>
+                        <span className="text-neutral-300">/</span>
+                        <strong className="text-neutral-900 font-bold">{activeFinish?.name}</strong>
+                      </span>
+                      <span className="text-[11px] font-mono-data text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-100/70">
+                        {activeFinish?.stockCount !== undefined ? `${activeFinish.stockCount} in stock` : "Available to Ship"}
+                      </span>
+                    </div>
+
+                    {/* Circular Color Swatches */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {finishes.map((finish, idx) => {
+                        const isSelected = idx === selectedFinishIndex;
+                        return (
+                          <button
+                            key={finish.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedFinishIndex(idx);
+                              setSelectedImageOverride(null);
+                            }}
+                            className={`group relative p-3 rounded-2xl flex items-center gap-2.5 transition-all duration-200 text-left apple-tap-press cursor-pointer border ${
+                              isSelected
+                                ? 'bg-[#161514] text-white border-[#161514] shadow-md ring-2 ring-[#161514] ring-offset-2 scale-[1.02]'
+                                : 'bg-[#FAF8F5] hover:bg-neutral-100 text-neutral-800 border-neutral-200/70 hover:border-neutral-300'
+                            }`}
+                            title={finish.name}
+                          >
+                            <span
+                              className={`w-5 h-5 rounded-full border border-black/15 shrink-0 shadow-sm transition-transform duration-200 ${
+                                isSelected ? 'scale-110 ring-2 ring-white' : 'group-hover:scale-105'
+                              }`}
+                              style={{ backgroundColor: finish.colorCode }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xs font-semibold truncate leading-tight">
+                                {finish.name.replace(' Titanium', '')}
+                              </div>
+                              <div className={`text-[10px] font-mono-data mt-0.5 ${isSelected ? 'text-emerald-300' : 'text-neutral-400'}`}>
+                                {finish.stockCount !== undefined ? `${finish.stockCount} left` : 'Available'}
+                              </div>
+                            </div>
+                            {isSelected && (
+                              <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. STORAGE SPACE / CAPACITY SELECTOR */}
+                {capacities.length > 0 && (
+                  <div className="space-y-3 pt-4 border-t border-neutral-100">
+                    <div className="flex items-center justify-between text-xs font-mono-data uppercase tracking-wider">
+                      <span className="text-neutral-500 font-semibold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+                        <span>Storage Space</span>
+                        <span className="text-neutral-300">/</span>
+                        <strong className="text-neutral-900 font-bold">{capacities[selectedCapacityIndex]?.size}</strong>
+                      </span>
+                      <span className="text-[11px] font-mono-data text-neutral-400">
+                        Official NVMe Storage
+                      </span>
+                    </div>
+
+                    {/* Storage Capacity Pill Buttons */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {capacities.map((cap, idx) => {
+                        const isSelected = idx === selectedCapacityIndex;
+                        return (
+                          <button
+                            key={cap.size}
+                            type="button"
+                            onClick={() => setSelectedCapacityIndex(idx)}
+                            className={`p-3.5 rounded-2xl flex flex-col justify-center items-center gap-1 transition-all duration-200 apple-tap-press cursor-pointer border text-center ${
+                              isSelected
+                                ? 'bg-[#161514] text-white border-[#161514] shadow-md ring-2 ring-[#161514] ring-offset-2 scale-[1.02]'
+                                : 'bg-[#FAF8F5] hover:bg-neutral-100 text-neutral-800 border-neutral-200/70 hover:border-neutral-300'
+                            }`}
+                          >
+                            <span className="text-sm sm:text-base font-bold tracking-tight">
+                              {cap.size}
+                            </span>
+                            <span className={`text-[10px] font-mono-data uppercase font-semibold ${isSelected ? 'text-emerald-300' : 'text-neutral-400'}`}>
+                              {cap.priceDelta === 0 ? 'Included' : `+$${cap.priceDelta}`}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. DYNAMIC CONFIGURATION SUMMARY & QUICK ACTION */}
+                <div className="pt-4 border-t border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FAF8F5]/80 -mx-5 -mb-5 sm:-mx-7 sm:-mb-7 p-4 sm:p-5 rounded-b-3xl">
+                  <div>
+                    <div className="text-[10px] font-mono-data uppercase tracking-widest text-neutral-400 font-semibold flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+                      <span>Configured Price ({activeFinish?.name || 'Selected'} · {activeCapacity?.size || 'Standard'})</span>
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                      <span className="font-serif-editorial text-2xl sm:text-3xl font-bold text-[#161514]">
+                        ${calculatedDevicePrice} <span className="text-xs font-mono-data font-normal text-neutral-400">USD</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setIsInstallmentOpen(true)}
+                        className="text-[11px] font-mono-data text-[#059669] hover:underline font-semibold cursor-pointer"
+                      >
+                        • From ${Math.ceil(calculatedDevicePrice / 12)}/mo at 0% APR
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#161514] hover:bg-neutral-800 text-white text-xs font-mono-data uppercase tracking-wider font-semibold apple-tap-press transition-all shadow-sm flex items-center justify-center gap-2.5 group cursor-pointer"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#059669] group-hover:scale-125 transition-transform" />
+                      <span>Add to Bag</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* MOBILE ONLY: Bespoke Options & Protection (Personalization, AppleCare+, Trade-In) */}
+              <div className="lg:hidden space-y-4 pt-1">
+                
+                {/* Free Laser Engraving Studio */}
+                {canEngrave && (
+                  <div className="p-4 bg-white rounded-2xl border border-neutral-200/80 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-[#161514] text-white flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z" fill="currentColor" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-mono-data uppercase tracking-wider font-bold text-[#161514]">
+                          Atelier Laser Engraving
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono-data uppercase bg-emerald-50 text-[#059669] px-2 py-0.5 rounded font-bold border border-emerald-100">
+                        Complimentary
+                      </span>
+                    </div>
+
+                    {engravingText ? (
+                      <div className="p-3 bg-[#FAF8F5] rounded-xl border border-neutral-200 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center font-mono-data text-xs font-bold text-[#3D3B39] tracking-wider shadow-2xs shrink-0">
+                            {engravingText.slice(0, 3)}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-mono-data uppercase text-neutral-400">Marking Inscription</div>
+                            <div className="text-xs font-bold text-[#161514] truncate font-mono-data tracking-widest">
+                              &ldquo;{engravingText}&rdquo;
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setIsEngravingModalOpen(true)}
+                            className="px-3 py-1.5 rounded-lg bg-white hover:bg-neutral-100 border border-neutral-200 text-xs font-mono-data uppercase font-semibold text-neutral-800 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEngravingText("")}
+                            className="px-2 py-1.5 rounded-lg hover:bg-rose-50 text-neutral-400 hover:text-rose-600 text-xs font-mono-data uppercase transition-colors"
+                            title="Remove Engraving"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-[#FAF8F5]/60 rounded-xl border border-neutral-200/60">
+                        <div>
+                          <div className="text-xs font-semibold text-neutral-800">
+                            Personalize your {product.title}
+                          </div>
+                          <div className="text-[11px] text-neutral-500 font-sans-body">
+                            Add initials, a name, or iconic Apple laser emojis for free.
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsEngravingModalOpen(true)}
+                          className="px-3.5 py-2 rounded-xl bg-[#161514] hover:bg-neutral-800 text-white text-xs font-mono-data uppercase tracking-wider font-semibold apple-tap-press transition-all shrink-0 shadow-2xs cursor-pointer text-center"
+                        >
+                          Personalize →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* AppleCare+ Coverage Selector */}
+                <div className="p-4 bg-white rounded-2xl border border-neutral-200/80 shadow-2xs space-y-2.5">
+                  <div className="flex items-center justify-between text-xs font-mono-data uppercase tracking-wider">
+                    <span className="text-neutral-500 font-medium">AppleCare+ Official Coverage</span>
+                    <span className="text-neutral-400 text-[10px]">2-Year Warranty</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setHasAppleCare(false)}
+                      className={`p-3 rounded-xl text-left border transition-all duration-200 apple-tap-press cursor-pointer flex items-center justify-between ${
+                        !hasAppleCare 
+                          ? 'border-neutral-900 bg-white ring-1 ring-neutral-900 shadow-2xs' 
+                          : 'border-neutral-200 bg-[#FAF8F5]/40 hover:bg-neutral-50 text-neutral-600'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-xs font-bold text-neutral-900">Standard Apple 1-Year Warranty</div>
+                        <div className="text-[11px] text-neutral-500 font-sans-body">Official Apple hardware warranty included.</div>
+                      </div>
+                      <span className="font-mono-data text-xs font-semibold text-neutral-400 shrink-0">Included</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setHasAppleCare(true)}
+                      className={`p-3 rounded-xl text-left border transition-all duration-200 apple-tap-press cursor-pointer flex items-center justify-between ${
+                        hasAppleCare 
+                          ? 'border-neutral-900 bg-white ring-1 ring-neutral-900 shadow-2xs' 
+                          : 'border-neutral-200 bg-[#FAF8F5]/40 hover:bg-neutral-50 text-neutral-600'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-xs font-bold text-neutral-900 flex items-center gap-1.5">
+                          <span>AppleCare+ Comprehensive</span>
+                          <span className="text-[9px] font-mono-data uppercase bg-emerald-100 text-[#059669] px-1.5 py-0.5 rounded font-bold">Recommended</span>
+                        </div>
+                        <div className="text-[11px] text-neutral-500 font-sans-body">
+                          Unlimited drops/spills & priority Apple support.
+                        </div>
+                      </div>
+                      <span className="font-mono-data text-xs font-bold text-[#059669] shrink-0">+${appleCareFee}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Apple Trade-In Banner */}
+                <div className="p-3.5 bg-white rounded-2xl border border-neutral-200/80 shadow-2xs flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-emerald-100 text-[#059669] flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-900">Apple Trade-In</div>
+                      <div className="text-neutral-500 text-[11px]">Get up to $650 credit towards this device</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsTradeInOpen(true)}
+                    className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[11px] font-mono-data uppercase tracking-wider font-bold border border-neutral-200 text-neutral-800 apple-tap-press transition-colors shrink-0 cursor-pointer"
+                  >
+                    Estimate →
+                  </button>
+                </div>
+
+                {/* Trust Badges */}
+                <div className="p-4 bg-white rounded-2xl border border-neutral-200/80 shadow-2xs space-y-2 text-xs text-neutral-500 font-medium">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-[#059669] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>100% Genuine factory-sealed Apple device</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-[#059669] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>Free insured courier delivery or in-store pickup</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-[#059669] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>Official Apple Warranty & coverage lookup eligible</span>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
             {/* Curatorial Storytelling Section */}
@@ -851,8 +1180,8 @@ export default function DeviceDetailPage() {
 
           </div>
 
-          {/* RIGHT COLUMN: Sticky Purchase & Customization Console (5 cols) */}
-          <div className="lg:col-span-5">
+          {/* RIGHT COLUMN: Sticky Purchase & Customization Console (5 cols - Desktop only, mobile has unified console directly under picture) */}
+          <div className="hidden lg:block lg:col-span-5">
             <div className="sticky top-24 bg-white rounded-3xl p-6 sm:p-8 space-y-6 shadow-[0_4px_30px_rgba(0,0,0,0.04)] border border-neutral-200/80">
               
               {/* Product Header */}
