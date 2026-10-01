@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// LEGACY PRODUCT MODELS (PRESERVED TO PREVENT DATA LOSS)
+// -----------------------------------------------------------------------------
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   // e.g., "iPhone", "Mac", "iPad"
+  description String
+  basePrice   Float
+  
+  variants    Variant[]
+  media       Media[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Variant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  type        String   // e.g., "Color", "Storage", "Case", "Lighting"
+  name        String   // e.g., "Desert Titanium", "256GB"
+  priceModifier Float  @default(0) // Extra cost for this variant
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  type        String   // e.g., "PosterBase", "VideoColorFwd"
+  url         String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// PRODUCTION COMMERCE MODELS: ORDERS, ITEMS, COUPONS & INVENTORY
+// -----------------------------------------------------------------------------
+
+model Order {
+  id                    String      @id @default(cuid())
+  orderNumber           String      @unique
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  status                String      @default("vault_allocated") // "vault_allocated" | "payment_verified" | "courier_dispatched" | "delivered"
+  statusLabel           String      @default("Order Confirmed")
+  
+  // Customer
+  customerName          String
+  customerEmail         String
+  customerPhone         String
+  
+  // Fulfillment & Address
+  fulfillmentType       String      @default("courier") // "courier" | "pickup"
+  shippingMethod        String      @default("complimentary") // "complimentary" | "express" | "pickup"
+  streetAddress         String?
+  buildingNumber        String?
+  city                  String?
+  country               String      @default("United States")
+  postalCode            String?
+  courierNotes          String?
+  pickupBranch          String?
+  
+  // Financial breakdown (USD)
+  subtotal              Float
+  shippingCost          Float       @default(0)
+  discountAmount        Float       @default(0)
+  promoCode             String?
+  tradeInVoucher        String?
+  totalAmount           Float
+  
+  // Payment
+  paymentMethod         String      @default("card") // "card" | "stripe" | "apple_pay" | "installments"
+  paymentStatus         String      @default("paid") // "paid" | "pending" | "failed"
+  stripeSessionId       String?     @unique
+  stripePaymentIntentId String?
+  cardBrand             String?
+  cardLast4             String?
+  installmentMonths     Int?
+  
+  // Courier Dispatch
+  trackingCode          String
+  courierName           String?     @default("Karim Hassan")
+  courierVehicle        String?     @default("Climate-Regulated Vault Van #12")
+  courierPhone          String?     @default("+20 102 984 5512")
+  securityPin           String      // 4-digit PIN
+  estimatedDelivery     String?
+  
+  // Relations
+  items                 OrderItem[]
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId       String
+  productTitle    String
+  productCategory String?
+  primaryImage    String?
+  selectedFinish  String?
+  capacity        String?
+  unitPrice       Float
+  quantity        Int      @default(1)
+  
+  // AppleCare+
+  appleCareName   String?
+  appleCarePrice  Float?
+  
+  // Laser Engraving
+  engravingText   String?
+  
+  createdAt       DateTime @default(now())
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        String   @default("percentage") // "percentage" | "fixed"
+  value       Float
+  minSpend    Float    @default(0)
+  maxUses     Int      @default(100)
+  usedCount   Int      @default(0)
+  expiry      String?
+  description String?
+  isTradeIn   Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model InventoryRecord {
+  id          String   @id @default(cuid())
+  productId   String
+  finishId    String
+  stockCount  Int      @default(10)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([productId, finishId])
+}
+
+model WebhookEvent {
+  id          String   @id // stripe event id (e.g. evt_...)
+  eventType   String
+  processedAt DateTime @default(now())
+}
+

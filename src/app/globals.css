@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-canvas: #FAF8F5;
+    --bg-surface: #F3EFEA;
+    --bg-surface-subtle: #EFEAE3;
+    --bg-card: #FFFFFF;
+    --bg-dark: #121110;
+    
+    --text-ink: #161514;
+    --text-secondary: #524E48;
+    --text-muted: #807B73;
+    
+    --border-hairline: #E5DFD5;
+    --border-subtle: #D8D1C5;
+    --border-dark: #272522;
+    
+    --accent-cosmo: #059669;
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+}
+
+/* Readable Luxury Editorial Typography */
+.font-serif-editorial {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.font-sans-body {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-mono-data {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D1C5;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B5AEA1;
+}
+
+/* Apple Fluid Motion & Physics Animations */
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes appleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes deviceCrossfade {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes swatchSelect {
+  0% {
+    transform: scale(0.96);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes tabSlideIn {
+  from {
+    opacity: 0.3;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(5, 150, 105, 0);
+  }
+}
+
+.animate-apple-fade-in {
+  animation: appleFadeIn 400ms var(--ease-apple) forwards;
+  will-change: opacity, transform;
+}
+
+.animate-device-crossfade {
+  animation: deviceCrossfade 500ms var(--ease-apple) forwards;
+  will-change: opacity, transform;
+}
+
+.animate-swatch-pop {
+  animation: swatchSelect 350ms var(--ease-spring) forwards;
+  will-change: transform;
+}
+
+.animate-tab-panel {
+  animation: tabSlideIn 350ms var(--ease-apple) forwards;
+  will-change: opacity, transform;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite;
+}
+
+/* Tactile micro-press feedback */
+.apple-tap-press {
+  transition: transform 220ms var(--ease-apple), box-shadow 250ms var(--ease-apple);
+  will-change: transform;
+}
+.apple-tap-press:active {
+  transform: scale(0.98);
+}
+
+.apple-card-hover {
+  transition: transform 450ms var(--ease-apple), box-shadow 450ms var(--ease-apple), border-color 300ms ease;
+  will-change: transform, box-shadow;
+}
+.apple-card-hover:hover {
+  transform: translateY(-2px);
+}
+
