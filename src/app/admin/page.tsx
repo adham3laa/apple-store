@@ -115,6 +115,11 @@ export default function AdminDashboardPage() {
     } catch (e) {
       console.error(e);
     }
+    // Clear cookies explicitly on client
+    document.cookie = "cosmo_admin_session=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    try {
+      localStorage.removeItem("cosmo_admin_session");
+    } catch (e) {}
     window.location.href = "/admin/login";
   };
 

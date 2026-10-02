@@ -12,7 +12,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { passkey } = body;
 
-    if (!passkey || !VALID_PASSKEYS.includes(String(passkey).trim())) {
+    const cleanKey = String(passkey || "").trim().toLowerCase();
+    const allowedKeys = VALID_PASSKEYS.map((k) => String(k).trim().toLowerCase());
+
+    if (!cleanKey || !allowedKeys.includes(cleanKey)) {
       return NextResponse.json(
         { success: false, error: "Invalid executive security passkey" },
         { status: 401 }
@@ -24,12 +27,17 @@ export async function POST(request: NextRequest) {
       message: "Atelier Executive Access Granted",
     });
 
+    const isHttps =
+      request.headers.get("x-forwarded-proto") === "https" ||
+      request.url.startsWith("https://") ||
+      process.env.NODE_ENV === "production";
+
     // Set secure session cookie
     response.cookies.set({
       name: "cosmo_admin_session",
       value: "active_executive_session",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: false, // Allows client verification and seamless browser handoff
+      secure: isHttps,
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
@@ -60,5 +68,11 @@ export async function DELETE() {
   });
 
   response.cookies.delete("cosmo_admin_session");
+  response.cookies.set({
+    name: "cosmo_admin_session",
+    value: "",
+    path: "/",
+    maxAge: 0,
+  });
   return response;
 }
