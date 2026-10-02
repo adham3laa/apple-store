@@ -19,7 +19,7 @@ export function CosmoLogo({
   const emblemDimension = isSm ? 34 : isLg ? 52 : 42;
 
   return (
-    <div className="flex items-center gap-3.5 select-none group cursor-pointer">
+    <div className="flex items-center gap-2.5 sm:gap-3.5 select-none group cursor-pointer">
       {/* Signature Cosmo Astronomical Orbital Emblem */}
       <div 
         className="relative flex-shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
@@ -133,28 +133,24 @@ export function CosmoLogo({
       </div>
 
       {/* Brand Wordmark & Editorial Typography */}
-      <div className="flex flex-col text-left">
-        <div className="flex items-baseline gap-2">
+      <div className="flex flex-col text-left justify-center">
+        <div className="flex items-baseline">
           <span 
-            className={`font-serif-editorial tracking-[0.16em] sm:tracking-[0.22em] font-medium uppercase transition-colors duration-300 ${
+            className={`font-serif-editorial tracking-[0.18em] sm:tracking-[0.22em] font-semibold uppercase leading-none transition-colors duration-300 ${
               isSm ? 'text-base sm:text-lg' : isLg ? 'text-2xl sm:text-3xl' : 'text-lg sm:text-2xl'
             } ${inverted ? 'text-white' : 'text-[#161514] group-hover:text-black'}`}
           >
-            C O S M O
+            COSMO
           </span>
         </div>
         {showSubtitle && (
-          <div className="hidden sm:flex items-center gap-1.5 -mt-0.5">
+          <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
             <span 
-              className={`text-[8px] sm:text-[9px] font-mono-data tracking-[0.18em] sm:tracking-[0.24em] uppercase font-semibold ${
-                inverted ? 'text-neutral-400' : 'text-neutral-500'
+              className={`text-[7.5px] sm:text-[9px] font-mono-data tracking-[0.16em] sm:tracking-[0.22em] uppercase font-bold leading-none ${
+                inverted ? 'text-neutral-400' : 'text-[#059669]'
               }`}
             >
-              ATELIER
-            </span>
-            <span className="text-neutral-300 text-[8px]">•</span>
-            <span className="text-[8px] sm:text-[9px] font-mono-data tracking-[0.16em] sm:tracking-[0.2em] uppercase font-semibold text-[#059669]">
-              APPLE BOUTIQUE
+              APPLE ATELIER
             </span>
           </div>
         )}

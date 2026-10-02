@@ -428,22 +428,23 @@ function AccountContent() {
       )}
 
       {/* Account Masthead */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-neutral-200/60 sticky top-0 z-40">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
-          <Link href="/" className="hover:opacity-80 transition-opacity">
+      <header className="bg-white/90 backdrop-blur-xl border-b border-neutral-200/60 sticky top-0 z-40">
+        <div className="max-w-[1440px] mx-auto px-3 sm:px-6 md:px-12 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <Link href="/" className="hover:opacity-80 transition-opacity shrink-0">
             <CosmoLogo size="sm" showSubtitle={true} />
           </Link>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100 text-xs font-mono-data">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100 text-xs font-mono-data">
               <span className="w-2 h-2 rounded-full bg-[#059669]" />
               <span className="font-semibold text-neutral-800">{user.name}</span>
             </div>
             <Link
               href="/"
-              className="text-xs font-mono-data tracking-wider uppercase text-neutral-600 hover:text-black transition-colors"
+              className="text-xs font-mono-data tracking-wider uppercase text-neutral-600 hover:text-black transition-colors shrink-0 py-1.5 px-3 rounded-full hover:bg-neutral-100 touch-manipulation"
             >
-              ← Back to Store
+              <span className="hidden sm:inline">← Back to Store</span>
+              <span className="sm:hidden">← Store</span>
             </Link>
           </div>
         </div>

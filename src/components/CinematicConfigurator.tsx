@@ -276,7 +276,7 @@ export default function CinematicConfigurator({ product }: { product: any }) {
           <a href="/" className="logo-wrap">
             <svg className="logo-svg" viewBox="0 0 170 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-4H7v-2h4V6h2v4h4v2h-4v4z" fill="#fff" opacity="0.9"/>
-              <text x="32" y="17" fill="#fff" fontFamily="'Manrope', sans-serif" fontWeight="700" fontSize="16" letterSpacing="-0.02em">TITANIUM STUDIO</text>
+              <text x="32" y="17" fill="#fff" fontFamily="'Manrope', sans-serif" fontWeight="700" fontSize="16" letterSpacing="0.1em">COSMO</text>
             </svg>
           </a>
           <div className="meta">

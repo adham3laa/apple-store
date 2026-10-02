@@ -453,46 +453,49 @@ export default function AdminDashboardPage() {
 
       {/* Admin Top Navigation */}
       <header className="sticky top-0 z-40 bg-[#161514] text-[#FAF8F5] border-b border-neutral-800 backdrop-blur-xl">
-        <div className="max-w-[1520px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-[1520px] mx-auto px-3 sm:px-6 md:px-12 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Link href="/" className="hover:opacity-90 transition-opacity">
-              <CosmoLogo size="sm" showSubtitle={false} />
+              <CosmoLogo size="sm" showSubtitle={false} inverted={true} />
             </Link>
-            <span className="text-neutral-600 font-mono-data text-xs">/</span>
-            <div className="flex items-center gap-2 text-xs font-mono-data tracking-wider uppercase text-emerald-400 font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>OWNER COMMAND CENTER</span>
+            <span className="hidden sm:inline text-neutral-600 font-mono-data text-xs">/</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-mono-data tracking-wider uppercase text-emerald-400 font-semibold">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="hidden sm:inline">OWNER COMMAND CENTER</span>
+              <span className="sm:hidden">ADMIN</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono-data">
+          <div className="flex items-center gap-1.5 sm:gap-3 text-xs font-mono-data shrink-0">
             <Link
               href="/"
-              className="px-3.5 py-1.5 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors flex items-center gap-2"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs touch-manipulation"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
               </svg>
-              <span>View Storefront</span>
+              <span className="hidden sm:inline">View Storefront</span>
+              <span className="sm:hidden">Store</span>
             </Link>
             <button
               onClick={openAddModal}
-              className="px-4 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5"
+              className="px-3 sm:px-4 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold uppercase tracking-wider transition-all shadow-sm flex items-center gap-1 text-[10px] sm:text-xs touch-manipulation cursor-pointer"
             >
-              <span>+ Add Product</span>
+              <span className="hidden sm:inline">+ Add Product</span>
+              <span className="sm:hidden">+ Add</span>
             </button>
             <button
               onClick={handleAdminLogout}
-              className="px-3.5 py-1.5 rounded-full bg-neutral-900 hover:bg-red-950/80 text-neutral-400 hover:text-red-300 border border-neutral-800 transition-colors flex items-center gap-1.5"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-neutral-900 hover:bg-red-950/80 text-neutral-400 hover:text-red-300 border border-neutral-800 transition-colors flex items-center gap-1.5 text-[10px] sm:text-xs touch-manipulation cursor-pointer"
               title="End Executive Session"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <span>Lock Vault</span>
+              <span className="hidden md:inline">Lock Vault</span>
             </button>
           </div>
         </div>

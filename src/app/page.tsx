@@ -75,10 +75,10 @@ function HomeContent() {
               </div>
 
               {/* Utility Tools Pill Toolbar: Compare & Installments & Owner */}
-              <div className="flex flex-wrap items-center gap-2 text-xs font-mono-data">
+              <div className="flex items-center gap-2 text-xs font-mono-data overflow-x-auto no-scrollbar max-w-full pb-1 sm:flex-wrap touch-pan-x">
                 <button
                   onClick={() => setIsCompareOpen(true)}
-                  className="py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 shadow-2xs transition-all flex items-center gap-2 group"
+                  className="py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 shadow-2xs transition-all flex items-center gap-2 group shrink-0 whitespace-nowrap touch-manipulation cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5 text-neutral-500 group-hover:text-black transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="2" y="3" width="9" height="18" rx="2" />
@@ -92,7 +92,7 @@ function HomeContent() {
                     setSelectedInstallmentProduct(filteredProducts[0] || null);
                     setIsInstallmentOpen(true);
                   }}
-                  className="py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 shadow-2xs transition-all flex items-center gap-2 group"
+                  className="py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 shadow-2xs transition-all flex items-center gap-2 group shrink-0 whitespace-nowrap touch-manipulation cursor-pointer"
                 >
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   <span className="font-semibold">0% Installments</span>
@@ -100,7 +100,7 @@ function HomeContent() {
 
                 <Link
                   href="/admin"
-                  className="py-2 px-3.5 rounded-full bg-[#161514] hover:bg-neutral-800 text-white shadow-2xs transition-all flex items-center gap-2 group"
+                  className="py-2 px-3.5 rounded-full bg-[#161514] hover:bg-neutral-800 text-white shadow-2xs transition-all flex items-center gap-2 group shrink-0 whitespace-nowrap touch-manipulation"
                 >
                   <svg className="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="3" />

@@ -18,13 +18,17 @@ export default function GlobalErrorPage({ error, reset }: ErrorProps) {
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#161514] flex flex-col justify-between font-sans-body">
       {/* Header */}
-      <header className="px-6 md:px-12 py-5 flex items-center justify-between border-b border-neutral-200/60 bg-white/60 backdrop-blur-md">
-        <Link href="/" className="hover:opacity-80 transition-opacity">
+      <header className="px-3 sm:px-6 md:px-12 py-3 sm:py-5 flex items-center justify-between gap-2 border-b border-neutral-200/60 bg-white/80 backdrop-blur-md sticky top-0 z-40">
+        <Link href="/" className="hover:opacity-80 transition-opacity shrink-0">
           <CosmoLogo size="sm" showSubtitle={true} />
         </Link>
-        <div className="text-[10px] font-mono-data uppercase tracking-widest text-neutral-400">
-          Atelier Resilience Guard
-        </div>
+        <Link
+          href="/"
+          className="text-xs font-mono-data uppercase tracking-wider text-neutral-500 hover:text-black transition-colors shrink-0 py-1.5 px-3 rounded-full hover:bg-neutral-100 touch-manipulation"
+        >
+          <span className="hidden sm:inline">← Return to Storefront</span>
+          <span className="sm:hidden">← Store</span>
+        </Link>
       </header>
 
       {/* Main Content */}

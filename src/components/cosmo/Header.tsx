@@ -74,13 +74,13 @@ export function Header({
       </div>
 
       {/* Main Navigation */}
-      <div className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 py-3 sm:py-3.5 flex items-center justify-between gap-2">
+      <div className="max-w-[1520px] mx-auto px-3 sm:px-6 md:px-12 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
         {/* Left: Brand Monogram / Wordmark & Mobile Hamburger */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="w-9 h-9 flex lg:hidden items-center justify-center rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 transition-colors shadow-2xs cursor-pointer touch-manipulation"
+            className="w-8 h-8 sm:w-9 sm:h-9 flex lg:hidden items-center justify-center rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 transition-colors shadow-2xs cursor-pointer touch-manipulation"
             aria-label="Open Navigation Menu"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -176,7 +176,7 @@ export function Header({
               <button
                 type="button"
                 onClick={openGoogleSignIn}
-                className="flex items-center gap-2 py-2 px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[#161514] text-xs font-mono-data uppercase tracking-wider transition-colors shadow-2xs group"
+                className="flex items-center gap-1.5 sm:gap-2 py-1.5 sm:py-2 px-2.5 sm:px-3.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-[#161514] text-[11px] sm:text-xs font-mono-data uppercase tracking-wider transition-colors shadow-2xs group touch-manipulation cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -302,11 +302,11 @@ export function Header({
           {/* Bag Button */}
           <button
             onClick={onOpenCart}
-            className="flex items-center gap-2.5 py-2 px-4 rounded-full bg-[#161514] text-[#FAF8F5] hover:bg-neutral-800 transition-colors font-mono-data tracking-wider uppercase text-[11px] shadow-sm group"
+            className="flex items-center gap-1.5 sm:gap-2.5 py-1.5 sm:py-2 px-3 sm:px-4 rounded-full bg-[#161514] text-[#FAF8F5] hover:bg-neutral-800 transition-colors font-mono-data tracking-wider uppercase text-[10px] sm:text-[11px] shadow-sm group touch-manipulation cursor-pointer"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#059669] group-hover:scale-125 transition-transform" />
             <span>Bag</span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
+            <span className="bg-white/20 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold">
               {cartCount}
             </span>
           </button>
