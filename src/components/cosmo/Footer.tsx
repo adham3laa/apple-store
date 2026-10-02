@@ -94,10 +94,19 @@ export function Footer() {
             © 2026 COSMO. ALL RIGHTS RESERVED. OFFICIAL APPLE RESELLER.
           </span>
         </div>
-        <div className="flex gap-6 font-mono-data text-[10px] uppercase tracking-wider">
+        <div className="flex flex-wrap items-center gap-5 sm:gap-6 font-mono-data text-[10px] uppercase tracking-wider">
           <span className="hover:text-neutral-300 cursor-pointer transition-colors">Privacy Policy</span>
           <span className="hover:text-neutral-300 cursor-pointer transition-colors">Terms of Sale</span>
           <span className="hover:text-neutral-300 cursor-pointer transition-colors">Warranty & Returns</span>
+          {/* Discreet Owner / Staff Vault Entry */}
+          <Link
+            href="/admin"
+            className="text-neutral-700 hover:text-neutral-400 transition-colors flex items-center gap-1.5 opacity-60 hover:opacity-100"
+            title="Executive Management"
+          >
+            <span className="w-1 h-1 rounded-full bg-neutral-600" />
+            <span>Staff Portal</span>
+          </Link>
         </div>
       </div>
     </footer>

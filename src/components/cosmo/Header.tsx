@@ -270,18 +270,6 @@ export function Header({
                     </svg>
                     <span>Account Details</span>
                   </Link>
-
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-emerald-700 hover:bg-emerald-50 transition-colors font-medium"
-                  >
-                    <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <circle cx="12" cy="12" r="3" />
-                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                    <span>Owner Portal (/admin)</span>
-                  </Link>
                 </div>
 
                 <div className="border-t border-neutral-100 pt-1">
@@ -310,16 +298,6 @@ export function Header({
               {cartCount}
             </span>
           </button>
-
-          {/* Discreet Admin Link */}
-          <Link
-            href="/admin"
-            className="hidden sm:flex items-center gap-1.5 py-2 px-3 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 transition-colors font-mono-data text-[10px] uppercase font-bold tracking-wider"
-            title="Open Store Owner Admin Dashboard"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>Admin</span>
-          </Link>
         </div>
       </div>
 
@@ -427,18 +405,6 @@ export function Header({
                     <span className="text-[10px] font-mono-data text-neutral-400">
                       {user ? user.name.split(" ")[0] : "SIGN IN"}
                     </span>
-                  </Link>
-
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-3 rounded-2xl hover:bg-emerald-50 flex items-center justify-between text-emerald-800 transition-colors"
-                  >
-                    <span className="flex items-center gap-2.5 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      <span>Store Owner Portal</span>
-                    </span>
-                    <span className="text-[10px] font-mono-data text-emerald-600">ADMIN</span>
                   </Link>
                 </div>
               </div>
