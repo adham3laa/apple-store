@@ -466,10 +466,10 @@ function AccountContent() {
           </div>
 
           {/* Tab Navigation Controls */}
-          <div className="flex flex-wrap items-center gap-1 p-1 bg-neutral-100/80 rounded-2xl text-xs font-mono-data uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 p-1.5 bg-neutral-100/80 rounded-2xl text-xs font-mono-data uppercase tracking-wider overflow-x-auto no-scrollbar sm:flex-wrap max-w-full touch-pan-x">
             <button
               onClick={() => setActiveTab("orders")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all shrink-0 whitespace-nowrap touch-manipulation ${
                 activeTab === "orders"
                   ? "bg-[#161514] text-white font-bold shadow-xs"
                   : "text-neutral-600 hover:text-black"
@@ -481,7 +481,7 @@ function AccountContent() {
 
             <button
               onClick={() => setActiveTab("addresses")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all shrink-0 whitespace-nowrap touch-manipulation ${
                 activeTab === "addresses"
                   ? "bg-[#161514] text-white font-bold shadow-xs"
                   : "text-neutral-600 hover:text-black"
@@ -493,7 +493,7 @@ function AccountContent() {
 
             <button
               onClick={() => setActiveTab("cards")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all shrink-0 whitespace-nowrap touch-manipulation ${
                 activeTab === "cards"
                   ? "bg-[#161514] text-white font-bold shadow-xs"
                   : "text-neutral-600 hover:text-black"
@@ -505,7 +505,7 @@ function AccountContent() {
 
             <button
               onClick={() => setActiveTab("profile")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all shrink-0 whitespace-nowrap touch-manipulation ${
                 activeTab === "profile"
                   ? "bg-[#161514] text-white font-bold shadow-xs"
                   : "text-neutral-600 hover:text-black"

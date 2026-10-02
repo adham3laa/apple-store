@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { CosmoProduct } from "../../../data/cosmo-catalog";
@@ -86,6 +86,21 @@ export default function DeviceDetailPage() {
   const [bundleItem1Checked, setBundleItem1Checked] = useState(true);
   const [bundleItem2Checked, setBundleItem2Checked] = useState(true);
   const [bundleItem3Checked, setBundleItem3Checked] = useState(true);
+
+  // Mobile Sticky Floating Bar visibility state
+  const [showMobileStickyBar, setShowMobileStickyBar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 420) {
+        setShowMobileStickyBar(true);
+      } else {
+        setShowMobileStickyBar(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (!product) {
     return (
@@ -1515,6 +1530,57 @@ export default function DeviceDetailPage() {
           onSaveEngraving={(val) => setEngravingText(val)}
           onRemoveEngraving={() => setEngravingText("")}
         />
+      )}
+
+      {/* Mobile Sticky Floating Purchase Dock */}
+      {showMobileStickyBar && (
+        <aside
+          className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl border-t border-neutral-200/80 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] px-4 py-3 pb-safe animate-apple-fade-in transition-all"
+          aria-label="Quick Purchase Action"
+        >
+          <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
+            {/* Device Mini Preview */}
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className="w-10 h-10 rounded-xl bg-neutral-100 p-1 flex items-center justify-center shrink-0 border border-neutral-200/60">
+                <img
+                  src={activeFinish?.heroImage || product.primaryImage}
+                  alt={product.title}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-[#161514] truncate font-serif-editorial">
+                  {product.title}
+                </div>
+                <div className="text-[10px] font-mono-data text-neutral-500 uppercase truncate">
+                  {activeFinish?.name ? activeFinish.name.replace(' Titanium', '') : 'Selected'} · {activeCapacity?.size || 'Standard'}
+                </div>
+              </div>
+            </div>
+
+            {/* Price & Fast Action */}
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="text-right">
+                <div className="font-serif-editorial text-base sm:text-lg font-bold text-[#161514] leading-tight">
+                  ${calculatedDevicePrice}
+                </div>
+                <div className="text-[9px] font-mono-data text-[#059669] font-bold uppercase">
+                  FREE SHIPPING
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="h-11 px-5 rounded-full bg-[#161514] hover:bg-neutral-800 text-white text-xs font-mono-data uppercase tracking-wider font-semibold shadow-sm apple-tap-press transition-all flex items-center gap-1.5 touch-manipulation cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                <span>Add</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </aside>
       )}
     </div>
   );

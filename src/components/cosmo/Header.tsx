@@ -24,7 +24,20 @@ export function Header({
   const pathname = usePathname();
   const { user, orders, logout, openGoogleSignIn } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -40,6 +53,7 @@ export function Header({
   const activeOrdersCount = orders.filter(o => o.status !== "delivered").length;
 
   const handleCategorySelect = (cat: ProductCategory) => {
+    setIsMobileMenuOpen(false);
     if (pathname === "/") {
       onSelectCategory(cat);
     } else {
@@ -61,10 +75,25 @@ export function Header({
 
       {/* Main Navigation */}
       <div className="max-w-[1520px] mx-auto px-4 sm:px-6 md:px-12 py-3 sm:py-3.5 flex items-center justify-between gap-2">
-        {/* Left: Brand Monogram / Wordmark */}
-        <Link href="/" className="group cursor-pointer shrink-0" onClick={() => onSelectCategory('all')}>
-          <CosmoLogo size="sm" showSubtitle={true} />
-        </Link>
+        {/* Left: Brand Monogram / Wordmark & Mobile Hamburger */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="w-9 h-9 flex lg:hidden items-center justify-center rounded-full bg-white hover:bg-neutral-100 border border-neutral-200 text-neutral-800 transition-colors shadow-2xs cursor-pointer touch-manipulation"
+            aria-label="Open Navigation Menu"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+
+          <Link href="/" className="group cursor-pointer shrink-0" onClick={() => onSelectCategory('all')}>
+            <CosmoLogo size="sm" showSubtitle={true} />
+          </Link>
+        </div>
 
         {/* Center: Curatorial Category Links */}
         <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-neutral-600">
@@ -293,6 +322,141 @@ export function Header({
           </Link>
         </div>
       </div>
+
+      {/* Mobile & Tablet Responsive Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden font-sans-body">
+          {/* Backdrop with blur */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative w-full max-w-xs sm:max-w-sm bg-white h-dvh max-h-dvh shadow-2xl flex flex-col z-10 animate-slide-in">
+            {/* Drawer Header */}
+            <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-[#FAF8F5]/80 pt-safe">
+              <Link
+                href="/"
+                onClick={() => {
+                  handleCategorySelect("all");
+                }}
+              >
+                <CosmoLogo size="sm" showSubtitle={true} />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors touch-manipulation cursor-pointer"
+                aria-label="Close Navigation"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Curated Categories */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-6">
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono-data tracking-[0.2em] uppercase text-neutral-400 font-bold px-3">
+                  Catalog Collections
+                </div>
+                <div className="space-y-1">
+                  {[
+                    { id: "all", label: "All Apple Devices", desc: "Complete 2026 Collection" },
+                    { id: "iphones", label: "iPhone", desc: "Titanium Flagships & Next-Gen" },
+                    { id: "macbooks", label: "Mac", desc: "MacBook Pro & MacBook Air M-Series" },
+                    { id: "airpods", label: "AirPods", desc: "AirPods Pro 2 & AirPods Max" },
+                    { id: "watches", label: "Apple Watch", desc: "Ultra 2 & Series 10 Titanium" },
+                    { id: "accessories", label: "Accessories", desc: "MagSafe, 35W Power, Magic Mouse" },
+                  ].map((cat) => {
+                    const isSelected = activeCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => handleCategorySelect(cat.id as ProductCategory)}
+                        className={`w-full p-3 rounded-2xl flex items-center justify-between text-left transition-all touch-manipulation cursor-pointer ${
+                          isSelected
+                            ? "bg-[#161514] text-white shadow-sm"
+                            : "hover:bg-neutral-50 text-neutral-800"
+                        }`}
+                      >
+                        <div>
+                          <div className="text-sm font-semibold">{cat.label}</div>
+                          <div className={`text-[10px] font-mono-data ${isSelected ? "text-emerald-300" : "text-neutral-400"}`}>
+                            {cat.desc}
+                          </div>
+                        </div>
+                        <span className={`text-xs ${isSelected ? "text-white" : "text-neutral-300"}`}>→</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Atelier Services & Tools */}
+              <div className="space-y-2 pt-2 border-t border-neutral-100">
+                <div className="text-[10px] font-mono-data tracking-[0.2em] uppercase text-neutral-400 font-bold px-3">
+                  Services & Account
+                </div>
+                <div className="space-y-1 text-xs">
+                  <Link
+                    href="/coverage"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 rounded-2xl hover:bg-neutral-50 flex items-center justify-between text-neutral-800 transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                      <span>Check Apple Coverage</span>
+                    </span>
+                    <span className="text-[10px] font-mono-data text-neutral-400">SERIAL LOOKUP</span>
+                  </Link>
+
+                  <Link
+                    href="/account"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 rounded-2xl hover:bg-neutral-50 flex items-center justify-between text-neutral-800 transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+                      <span>Client Account & Orders</span>
+                    </span>
+                    <span className="text-[10px] font-mono-data text-neutral-400">
+                      {user ? user.name.split(" ")[0] : "SIGN IN"}
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-3 rounded-2xl hover:bg-emerald-50 flex items-center justify-between text-emerald-800 transition-colors"
+                  >
+                    <span className="flex items-center gap-2.5 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <span>Store Owner Portal</span>
+                    </span>
+                    <span className="text-[10px] font-mono-data text-emerald-600">ADMIN</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Drawer Footer with Safe Area */}
+            <div className="p-5 border-t border-neutral-100 bg-[#FAF8F5] pb-safe space-y-2">
+              <div className="flex items-center gap-2 text-[10px] font-mono-data uppercase tracking-wider text-neutral-600 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+                <span>Free Insured Delivery Across Egypt & Worldwide</span>
+              </div>
+              <p className="text-[10px] text-neutral-400 font-mono-data">
+                COSMO Apple Reseller // 2026 Collection
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

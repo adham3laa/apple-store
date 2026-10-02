@@ -227,6 +227,7 @@ export default function CheckoutPage() {
   const [installmentMonths, setInstallmentMonths] = useState<number>(12);
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState<string>("");
   const [isProcessingApplePay, setIsProcessingApplePay] = useState(false);
+  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
 
   // Sync authUser on mount and change
   useEffect(() => {
@@ -679,13 +680,171 @@ export default function CheckoutPage() {
           /* ==================================================================== */
           /* CHECKOUT INTERFACE: 2-COLUMN LAYOUT (FORM + ORDER SUMMARY)           */
           /* ==================================================================== */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          <div className="space-y-6">
+            {/* MOBILE ONLY: Collapsible Order Summary Accordion Bar */}
+            <div className="lg:hidden bg-white rounded-2xl border border-neutral-200/80 shadow-xs overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
+                className="w-full px-5 py-3.5 flex items-center justify-between bg-neutral-50/80 hover:bg-neutral-100/60 transition-colors touch-manipulation"
+              >
+                <div className="flex items-center gap-3 text-left">
+                  <span className="w-7 h-7 rounded-full bg-[#161514] text-white flex items-center justify-center shrink-0">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-mono-data uppercase tracking-wider font-bold text-neutral-900">
+                        {mobileSummaryOpen ? "Hide Order Summary" : "Show Order Summary"}
+                      </span>
+                      <svg
+                        className={`w-3.5 h-3.5 text-neutral-500 transition-transform duration-200 ${mobileSummaryOpen ? "rotate-180" : ""}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </div>
+                    <span className="text-[10px] font-mono-data text-neutral-500">
+                      {totalCount} {totalCount === 1 ? "Item" : "Items"} in Bag
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="font-serif-editorial text-lg font-bold text-[#161514]">
+                    ${grandTotal} USD
+                  </span>
+                </div>
+              </button>
+
+              {/* Expanded Accordion Drawer */}
+              {mobileSummaryOpen && (
+                <div className="p-4 sm:p-5 border-t border-neutral-100 space-y-4 animate-fade-in bg-white">
+                  {/* Items List */}
+                  <div className="divide-y divide-neutral-100 max-h-60 overflow-y-auto pr-1">
+                    {cartItems.map((item, idx) => {
+                      const itemUnitTotal = item.product.basePrice + (item.appleCarePlan?.price || 0);
+                      return (
+                        <div key={idx} className="py-2.5 flex items-start gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-neutral-50 p-1.5 flex items-center justify-center shrink-0 border border-neutral-100">
+                            <img
+                              src={item.product.primaryImage}
+                              alt={item.product.title}
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-serif-editorial text-xs font-medium text-[#161514] truncate">
+                              {item.product.title}
+                            </h4>
+                            {item.selectedFinish && (
+                              <p className="text-[9px] font-mono-data text-neutral-500 uppercase tracking-wider truncate">
+                                {item.selectedFinish}
+                              </p>
+                            )}
+                            {item.appleCarePlan && (
+                              <span className="inline-block text-[8px] font-mono-data bg-emerald-50 text-[#059669] px-1 py-0.2 rounded font-bold">
+                                + {item.appleCarePlan.name}
+                              </span>
+                            )}
+                            <div className="flex items-center justify-between mt-1 text-[11px] font-mono-data">
+                              <span className="text-neutral-400">Qty: {item.quantity}</span>
+                              <span className="font-semibold text-neutral-900">${itemUnitTotal * item.quantity}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Promo / Voucher Input in Mobile Drawer */}
+                  <div className="pt-2 border-t border-neutral-100 space-y-2">
+                    {appliedCoupon ? (
+                      <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200/80 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0" />
+                          <div>
+                            <div className="font-mono-data text-[11px] font-bold text-emerald-800 tracking-wider">
+                              {appliedCoupon.code}
+                            </div>
+                            <div className="text-[9px] text-emerald-700">
+                              {appliedCoupon.isTradeInVoucher ? 'Official Trade-In Credit' : appliedCoupon.description}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={removeAppliedCoupon}
+                          className="text-[9px] font-mono-data text-neutral-400 hover:text-red-600 uppercase font-bold px-2 py-1 shrink-0"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                          placeholder="Coupon / Trade-In Code"
+                          className="flex-1 px-3 py-2 rounded-xl border border-neutral-200 text-xs font-mono-data uppercase bg-neutral-50/50 focus:outline-none focus:ring-1 focus:ring-black"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          className="px-3.5 py-2 rounded-xl bg-neutral-900 text-white text-xs font-mono-data uppercase tracking-wider font-semibold shrink-0"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    )}
+                    {couponMessage && (
+                      <p className={`text-[9px] font-mono-data ${couponMessage.success ? 'text-[#059669]' : 'text-rose-600'}`}>
+                        {couponMessage.text}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Totals Breakdown */}
+                  <div className="border-t border-neutral-100 pt-2 space-y-1 text-xs font-mono-data">
+                    <div className="flex justify-between text-neutral-600 text-[11px]">
+                      <span>Subtotal</span>
+                      <span>${totalAmount} USD</span>
+                    </div>
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-[#059669] font-bold text-[11px]">
+                        <span>Discount</span>
+                        <span>-${discountAmount} USD</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-neutral-600 text-[11px]">
+                      <span>Fulfillment</span>
+                      <span className={shippingCost === 0 ? "text-[#059669] font-bold" : ""}>
+                        {fulfillmentType === "pickup" ? "STORE PICKUP (FREE)" : (shippingCost === 0 ? "FREE" : `$${shippingCost} USD`)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-baseline pt-2 border-t border-neutral-100 font-bold text-neutral-900">
+                      <span className="uppercase text-[11px]">Total</span>
+                      <span className="font-serif-editorial text-xl">${grandTotal} USD</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             
             {/* LEFT COLUMN: Steps Progression (7 cols) */}
             <div className="lg:col-span-7 space-y-8">
               
               {/* Stepper Tabs Navigation */}
-              <div className="flex items-center gap-2 text-xs font-mono-data tracking-wider uppercase border-b border-neutral-200/60 pb-4">
+              <div className="flex items-center gap-2 text-xs font-mono-data tracking-wider uppercase border-b border-neutral-200/60 pb-4 overflow-x-auto no-scrollbar shrink-0">
                 <button
                   onClick={() => setCurrentStep("auth")}
                   className={`flex items-center gap-2 py-1 px-3 rounded-full transition-colors ${
@@ -1105,6 +1264,8 @@ export default function CheckoutPage() {
                               </label>
                               <input
                                 type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
                                 required
                                 value={shippingDetails.phone}
                                 onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
@@ -1125,6 +1286,7 @@ export default function CheckoutPage() {
                             </label>
                             <input
                               type="text"
+                              autoComplete="name"
                               required
                               value={shippingDetails.fullName}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, fullName: e.target.value })}
@@ -1139,6 +1301,8 @@ export default function CheckoutPage() {
                             </label>
                             <input
                               type="tel"
+                              inputMode="tel"
+                              autoComplete="tel"
                               required
                               value={shippingDetails.phone}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
@@ -1218,6 +1382,8 @@ export default function CheckoutPage() {
                             </label>
                             <input
                               type="text"
+                              inputMode="numeric"
+                              autoComplete="postal-code"
                               value={shippingDetails.postalCode}
                               onChange={(e) => setShippingDetails({ ...shippingDetails, postalCode: e.target.value })}
                               placeholder="e.g. 10001"
@@ -1563,6 +1729,8 @@ export default function CheckoutPage() {
                           <div className="relative">
                             <input
                               type="text"
+                              inputMode="numeric"
+                              autoComplete="cc-number"
                               maxLength={19}
                               value={cardDetails.cardNumber}
                               onChange={handleCardNumberChange}
@@ -1598,6 +1766,8 @@ export default function CheckoutPage() {
                             </div>
                             <input
                               type="text"
+                              inputMode="numeric"
+                              autoComplete="cc-exp"
                               maxLength={7}
                               value={cardDetails.expiry}
                               onChange={handleExpiryChange}
@@ -1628,6 +1798,8 @@ export default function CheckoutPage() {
                             </div>
                             <input
                               type="password"
+                              inputMode="numeric"
+                              autoComplete="cc-csc"
                               maxLength={4}
                               value={cardDetails.cvv}
                               onChange={handleCvvChange}
@@ -1731,7 +1903,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* RIGHT COLUMN: Sticky Order Summary (5 cols) */}
-            <div className="lg:col-span-5">
+            <div className="hidden lg:block lg:col-span-5">
               <div className="sticky top-24 bg-white rounded-3xl p-6 sm:p-8 space-y-6 shadow-[0_4px_30px_rgba(0,0,0,0.04)]">
                 <div>
                   <div className="text-[10px] font-mono-data tracking-[0.24em] uppercase text-[#059669] font-semibold mb-1 flex items-center gap-1.5">
@@ -1894,10 +2066,10 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-
           </div>
-        )}
-      </main>
+        </div>
+      )}
+    </main>
 
       {/* Checkout Footer Colophon */}
       <footer className="border-t border-neutral-200/60 py-6 text-center text-xs text-neutral-400 font-mono-data text-[10px] uppercase tracking-wider">

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CosmoProduct } from "../../data/cosmo-catalog";
 
@@ -32,6 +32,19 @@ export function CartDrawer({
   onRemoveItem
 }: CartDrawerProps) {
   const router = useRouter();
+
+  // Lock body scroll when cart drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const totalAmount = items.reduce(
@@ -48,7 +61,7 @@ export function CartDrawer({
       />
 
       {/* Drawer Container */}
-      <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col z-10">
+      <div className="relative w-full max-w-md bg-white h-dvh max-h-dvh shadow-2xl flex flex-col z-10">
         
         {/* Drawer Header */}
         <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
@@ -154,19 +167,21 @@ export function CartDrawer({
 
                     {/* Quantity & Price */}
                     <div className="flex items-center justify-between pt-3">
-                      <div className="flex items-center bg-neutral-100 rounded-full">
+                      <div className="flex items-center bg-neutral-100 rounded-full p-0.5">
                         <button
                           onClick={() => onUpdateQuantity(item.product.id, -1, item.selectedFinish)}
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold text-neutral-700 hover:bg-neutral-200 transition-colors"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-neutral-700 hover:bg-neutral-200 transition-colors touch-manipulation cursor-pointer"
+                          aria-label="Decrease quantity"
                         >
                           −
                         </button>
-                        <span className="px-2 text-xs font-bold text-neutral-800 font-mono-data">
+                        <span className="px-3 text-xs font-bold text-neutral-800 font-mono-data">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => onUpdateQuantity(item.product.id, 1, item.selectedFinish)}
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold text-neutral-700 hover:bg-neutral-200 transition-colors"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-neutral-700 hover:bg-neutral-200 transition-colors touch-manipulation cursor-pointer"
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>
@@ -185,7 +200,7 @@ export function CartDrawer({
 
         {/* Drawer Footer / Checkout */}
         {items.length > 0 && (
-          <div className="p-6 border-t border-neutral-100 bg-white space-y-4">
+          <div className="p-6 border-t border-neutral-100 bg-white space-y-4 pb-safe">
             <div className="space-y-1.5 text-xs text-neutral-600 font-mono-data text-[11px] uppercase tracking-wider">
               <div className="flex justify-between">
                 <span>Insured Delivery</span>
@@ -202,7 +217,7 @@ export function CartDrawer({
                 onClose();
                 router.push('/checkout');
               }}
-              className="w-full py-4 rounded-full bg-[#161514] hover:bg-neutral-800 text-[#FAF8F5] text-xs font-mono-data uppercase tracking-[0.2em] font-semibold transition-all flex items-center justify-center gap-3 shadow-sm group"
+              className="w-full py-4 rounded-full bg-[#161514] hover:bg-neutral-800 text-[#FAF8F5] text-xs font-mono-data uppercase tracking-[0.2em] font-semibold transition-all flex items-center justify-center gap-3 shadow-sm group touch-manipulation cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#059669] group-hover:scale-125 transition-transform" />
               <span>Proceed to Checkout</span>

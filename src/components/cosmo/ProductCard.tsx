@@ -78,7 +78,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                       title={f.name}
                       onMouseEnter={() => setActiveFinishIndex(idx)}
                       onClick={() => setActiveFinishIndex(idx)}
-                      className={`w-3.5 h-3.5 rounded-full border transition-all duration-300 relative ${
+                      className={`w-3.5 h-3.5 rounded-full border transition-all duration-300 relative touch-manipulation before:content-[''] before:absolute before:-inset-2.5 before:rounded-full ${
                         isSelected 
                           ? 'scale-125 ring-2 ring-black/80 ring-offset-1 border-white shadow-xs z-10' 
                           : 'border-black/10 hover:scale-110 shadow-2xs'
